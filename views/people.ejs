@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+立功人员展示系统
+</title>
+<link rel="stylesheet" href="css/font-awesome.css">
+<style>
+.ziti{
+  font-family: Arial,Helvetica,sans-serif;
+  color:white;
+  text-align: center;
+  font-size:45px;
+}
+
+.zitib{
+  font-family: 华文行楷;
+  color:white;
+  text-align: center;
+  font-size:80px;
+}
+
+.title{
+  font-family: Arial,Helvetica,sans-serif;
+  color:white;
+  text-align: center;
+  font-size:45px;
+}
+.center{
+  position: fixed;
+  top:30%;
+  left: 20%;
+  float: left;
+}
+.top{
+  position:fixed;
+  height: 15%;
+  width:100%;
+  text-align: center;
+}
+a:link{
+  text-decoration: none;
+};
+a:visited{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: none;
+}
+a:active{
+  text-decoration: none;
+}
+
+li{
+  list-style-type:none;
+  font-size: 50px;
+  line-height: 50px;
+  color: white;
+  margin-top: 30px; 
+}
+
+.part{
+    height: 50px;
+    line-height: 50px;
+    width: 200px;
+    text-align: justify;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    font-family: 楷体;
+}
+.depart{
+        display: inline-block;
+      width: 100%;
+      height: 0;
+}
+
+</style>
+</head>
+<body style="background: url(/image/rblue.jpg);">
+<div >
+<div class="top"><a href='/back'><div class="ziti"><img src="/image/police.png" width="150px" height="150px"><div class="zitib">网安支队历年立功授奖情况展示</div></div></a></div>
+<div class="center">
+<div style="width: 10000px">
+<div style="float: left;margin-right: 40px">
+<ul>
+  <li><span class="part">姓名<i class="depart"></i></span> : <span style="font-family: 楷体"><%=people[0].name%></span></li>
+  <li><span class="part">性别<i class="depart"></i></span> : <span style="font-family: 楷体"><%=people[0].gender%></span></li>
+  <li><span class="part">警员编号<i class="depart"></i></span> :<span style="font-family: 楷体"> <%=people[0].id%></span></li>
+  <li><span class="part">所属部门<i class="depart"></i></span> : <span style="font-family: 楷体"><%=people[0].department%></span></li>
+  <li><span class="part">职务<i class="depart"></i></span> : <span style="font-family: 楷体"><%=people[0].position%></span></li>
+</ul></div>
+
+
+<div style="color: white;margin-left: 100px"><img src="/image/headers/<%=people[0].pic%>" style="width: 600px ;height: 405px"></div>
+</div>
+  <div style="margin-top:20px; width: 90%"><span style="color: white;font-size:50px;font-family: 楷体;padding-left: 37px">曾获奖项</span><br/><br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+<%
+    for(var i=0,j=0;i<people.length;i++,j++)
+    {
+%>
+    <span style="color:white;font-size: 35px;font-family: 楷体"><%=people[i].year%>年<%=people[i].item%><%=people[i].detail%>
+<%   
+%>
+    
+<%
+    
+    }
+%>
+
+  </span></div>
+</div>
+<div style="padding-left: 95%;padding-top: 50%; 
+">
+<a href='/persons?year=<%=year%>&item=<%=item%>&prize=<%=prize%>'><i class="fa fa-chevron-circle-left" style="font-size:48px;color: white;"></i></a>
+</div>
+</div>
+</body>
+</html>

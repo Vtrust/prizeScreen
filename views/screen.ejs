@@ -1,0 +1,146 @@
+<html>
+<head>
+	<title>prizeShow</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	<link rel="stylesheet" href="css/slick.css"/>
+	<link rel="stylesheet" href="css/slick-theme.css"/>
+	<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	html body{
+		width: 100%;
+		height: 100%;
+	}
+	.slick-slide:focus { outline:none;}
+	.slick-for{
+		width: 100%;
+		height: 100%;
+		margin: 0 auto;
+	}
+
+	#container{
+		position: relative;
+	}
+	.OnePerson{
+		width: 100%;
+	}
+	.OnePerson img{
+		width: 100%;
+	}
+	#background{
+		position: absolute;
+		left: 0;
+		top:0;
+		z-index: -1;
+	}
+	.err {
+		display: none;
+	}
+	.err h1{
+		position: absolute;
+		color: #fff;
+		text-align: center;
+		width: 100%;
+	}
+
+</style>
+</head>
+<body>
+	<div id="container">
+		<div class="err"></div>
+		<div id="carousel">
+			<div class="slick-for"></div>
+		</div>
+		<div id="background"></div>
+	</div>
+	<script type="text/javascript" src="javascripts/jquery.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="javascripts/slick.min.js"></script>
+	<script type="text/javascript" src="javascripts/background2.js"></script>
+	<script type="text/javascript">	
+		//轮播图初始化
+		$(document).ready(function(){
+			$(function(){
+				$('.slick-for').slick({
+					autoplay:false,
+					arrows: false,
+					//fade: true,
+					autoplaySpeed:1000,
+					pauseOnHover:false
+					//asNavFor: '.slick-nav'
+				});
+			});	
+		});
+
+		//websocket事件监听
+		let number=0;	
+		$(function () {
+		 	//改过js 原本没有info数组 加上info数组的想法是要输出所有从manage传过来的指令（包括历史）
+		    var info = new Array();
+		    // 字符串
+		    console.log(location.search);
+		    var n = location.search.slice(1).split('=')[1];
+
+		    var content = $('#content');
+		    //建立websocket连接
+		    socket = io.connect('http://192.168.1.127');//把这个从localhost改成相应的ip号即可
+
+		    //收到server的连接确认
+		    socket.on('open',function(){
+
+		        //监听system事件
+		        socket.on('system',function(res){
+		        	$('.err').html('');
+		        	$('.err').hide();
+		            console.log(res.length);
+		            if(number!==0){
+		            	for(let i=0;i<number;i++){
+		            		$(".slick-for").slick('slickRemove',number-(1+i));
+		            	}
+		            	number=0;
+		            }
+
+
+					if(res.length!==0){
+						number=res.length;
+						for(let i=0;i<res.length;i++){
+							let text="<div personId=\""+res[i].id+"\" class=\"OnePerson\">\
+										<img src=\"image/headers/"+res[i].pic+"\">\
+										</div>";
+							console.log(text);
+							$(".slick-for").slick('slickAdd',text);
+						}
+						$('#background').fadeOut();
+					}else{
+						$('#background').fadeIn();
+					}
+		        });
+		        socket.on('back',function(){
+		        	location.reload();
+		        });
+		        //监听滚屏指令
+		        socket.on('playNext',function(){
+		        	if(number>1){
+		        		$(".slick-for").slick('slickNext');		        		
+		        	}
+		        })
+		        //监听错误信息
+		        socket.on('err',function(res){
+		        	$('.err').html('<h1>提示：'+res+'</h1>');
+		        	$('.err').show();
+		        	
+		        })
+		        socket.on('err',function(res){
+		            console.log(res);
+		        })
+		        socket.send(n);
+		    });
+
+		});
+	</script>
+</body>
+</html>
