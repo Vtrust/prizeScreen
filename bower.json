@@ -1,0 +1,22 @@
+{
+  "name": "screenshow",
+  "description": "",
+  "main": "",
+  "authors": [
+    "vtrust <vtrust32@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Vtrust/prizeScreen",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "slick-carousel": "^1.8.1",
+    "jquery": "jqurey#^3.2.1"
+  }
+}

@@ -1,70 +1,45 @@
-/**
- * Created by 14798 on 2017/9/19.
- */
-let fs = require('fs');
 let express = require('express');
-let path = require('path');
 let router = express.Router();
-let multer=require('multer');// 文件上传中间件
-let db = require('../dbhelper/db');
+let Manage = require('../module/manage');
 
+//管理主页
+router.get('/', Manage.index);
 
+// 添加新人
+router.get('/personAdd', Manage.showPerAdd);
 
-router.post('/', function(req, res) {
-    var body = req.body;
-    var num = body.num;
-    var con = body.content;
-    db.GetName(con, function(dat) {
-        var instant = dat;
-        if (instant.err) {
-            console.log('未找到此项');
-        } else {
-            if (num == 'all') {
-                for (var i = 1; i < 11; i++) {
-                    if (screenArr[i]) {
-                        console.log(i);
-                        screenArr[i].send(instant.type, instant.content);
-                    } else
-                        console.log('第' + i + '屏未启动');
-                }
-            } else if (screenArr[num])
-                screenArr[num].send(instant.type, instant.content);
-            else
-                console.log('该屏未启动');
-        }
-    });
-});
+// 添加新人
+router.post('/personAdd', Manage.uploadHeaders, Manage.perAdd);
 
-router.post('/change', function(req, res) {
+//
+router.get('/info', Manage.info);
 
-    var body = req.body;
-    var n = body.n;
-    console.log('点击' + n);
-    screenArr[n].send();
-    console.log(screenArr);
-    res.send({
-        err: 0,
-        msg: 'ok'
-    });
-});
+// 添加奖项
+router.post('/addprize', Manage.addPrize);
 
-router.post('/sub', function(req, res) {
+// 添加部门
+router.post('/adddeparment', Manage.addDepartment);
 
-    var body = req.body;
+// 添加职位
+router.post('/addposition',Manage.addPosition);
 
-    console.log(body);
-    var arr = new Array();
-    arr[0] = body.event;
-    arr[1] = body.type;
-    arr[2] = body.content;
-    //    console.log(arr);
+// 添加得奖页面
+router.get('/getPerizeAdd', Manage.getPerizeAdd);
 
-    //    console.log(arr);
-    db.insert('person', arr);
-    res.send({
-        err: 0,
-        msg: 'ok'
-    });
-});
+//获得当前年份的所有奖项
+router.get('/getPerizeAdd/year', Manage.getYearPrize);
+
+//获得之前获得奖项的人
+router.get('/getPerizeAdd/person', Manage.PreGetPrizePersons);
+
+//获得照片预览
+router.get('/getPerizeAdd/name', Manage.prePhoto);
+
+//批量加人
+router.post('/getPerizeAdd', Manage.addPersonsPrize);
+
+//查找
+router.get('/getPerizeAdd/search', Manage.search);
+
 
 module.exports = router;

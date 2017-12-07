@@ -1,3 +1,2 @@
 node_modules/*
-public/image/headers/*
-!public/image/headers
+public/libs/*

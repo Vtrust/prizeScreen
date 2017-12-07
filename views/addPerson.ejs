@@ -1,234 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title></title>
-       <style type="text/css">
-        .clear{
-            clear:both;
-        }
-        .getPrizeData{
-            width: 100%;
-        }
-        .onePerson {
-            float: left;
-            font-size: 10px;
-            width: 80px;
-            animation-duration: 0.1s;
-            -webkit-animation-duration:0.1s;
-        }
-        .onePerson p{
-            margin: 0 auto;
-            width: 60px;
-        }
-        .onePersonImg {
-            margin: 0 auto;
-            width: 70px;
-        }
-        .ziti{
-            font-family: Arial,Helvetica,sans-serif;
-            text-align: center;
-            font-size:45px;
-            color:black;
-        }
-        .zitib{
-            font-family: 华文行楷;
-            text-align: center;
-            font-size:80px;
-            color:black;
-        }
-        .center{
-            position: fixed;
-            left: 20%;
-            width:72%;
-            top:25%;
-            height: 100%;
-        }
-        .top{
-            position:fixed;
-            height: 20%;
-            width:100%;
-        }
-        label{
-            font-size: 20px;
-        }
-        a:hover{
-            text-decoration: none;
-        }
-        a:visited{
-            text-decoration: none;
-        }
-        a:link{
-            text-decoration: none;
-        }
-        a:active{
-            text-decoration: none;
-        }
-    </style>
 </head>
+
 <body>
-<div class="top"><a href="/index"><div class="ziti"><img src="/image/police.png" width="150px" height="150px"><div class="zitib">立功人员展示系统</div></div></a></div>
-<div class="center">
-    <div>
-        <h1>添加警员</h1>
-        <h3 id="alert"></h3>
+    <div class="top">
+        <a href="/index">
+            <div class="ziti">
+                <img src="/image/police.png" width="150px" height="150px">
+                <div class="zitib">立功人员展示系统</div>
+            </div>
+        </a>
     </div>
-    <form id="newPerson" method="post" enctype="multipart/form-data">
-        <div style="margin-bottom: 20px">
-            <label>警员编号: </label>
-            <input id="per_id"  name="per_id" type="text" placeholder="-请输入警号-" />
-        </div>  
-        <div style="margin-bottom: 20px">
-            <label>姓名: </label>
-            <input id="per_name"  name="per_name" type="text" placeholder="-请输入姓名-" />
-        </div>                
-        <div style="margin-bottom: 20px">
-            <label>性别: </label>
-            <select  id="per_gender" name="per_gender">
-               <option value="" selected="selected">-未选择-</option>
-               <option value="男" >男</option>
-               <option value="女" >女</option>
-               <option value="保密" >保密</option>
-            </select>
+    <%if(departments.length>0&&positions.length>0){%>
+    <div class="center">
+        <div>
+            <h1>添加警员</h1>
+            <h3 id="alert"></h3>
         </div>
-         <div style="margin-bottom: 20px">
-            <label>部门: </label>
-           <select  id="per_department" name="per_department" >
-                <option selected value="">-未选择-</option>
-                <%departments.forEach(function(department){%>
-                <option value="<%=department.post%>"><%=department.post%></option>
-                <%})%>
-            </select>
-        </div>
-        <div style="margin-bottom: 20px">
-            <label>职务: </label>
-           <select  id="per_position" name="per_position" >
-                <option selected value="">-未选择-</option>
-                <%positions.forEach(function(position){%>
-                <option value="<%=position.job%>"><%=position.job%></option>
-                <%})%>
-            </select>
-        </div>      
-        <div style="margin-bottom: 20px">
-            <label>照片: </label><br />
-            <input type="file" name="photo" id="photo">
-            <h1>original</h1>
-            <img src="" id="original" style="height: 101px; width: 150px;">
-            <h2>deal</h2>
-            <img src="" id="deal" style="height: 101px; width: 150px;">
-        </div>
-        <input id="submit" type="button" value="提交">        
-    </form>
-</div> 
-<div style="padding-top: 45%;padding-left: 92% ;">
-<a href="/add"><label>返回</label></a>
-</div> 
-<script type="text/javascript" src="../javascripts/jquery.min.js"></script>
-<script>
-    let baseImg='';
-    let maxSize=500*1024; //最大图片质量200kb
-    //图片选择事件
-    let inputPhoto=document.getElementById("photo");
+        <form id="newPerson" method="post" enctype="multipart/form-data">
+            <div style="margin-bottom: 20px">
+                <label>警员编号: </label>
+                <input id="per_id" name="per_id" type="text" placeholder="-请输入警号-" />
+            </div>
+            <div style="margin-bottom: 20px">
+                <label>姓名: </label>
+                <input id="per_name" name="per_name" type="text" placeholder="-请输入姓名-" />
+            </div>
+            <div style="margin-bottom: 20px">
+                <label>性别: </label>
+                <select id="per_gender" name="per_gender">
+                    <option value="" selected="selected">-未选择-</option>
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="保密">保密</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px">
+                <label>部门: </label>
+                <select id="per_department" name="per_department">
+                    <option selected value="">-未选择-</option>
+                    <%departments.forEach(function(department){%>
+                        <option value="<%=department.post%>">
+                            <%=department.post%>
+                        </option>
+                        <%})%>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px">
+                <label>职务: </label>
+                <select id="per_position" name="per_position">
+                    <option selected value="">-未选择-</option>
+                    <%positions.forEach(function(position){%>
+                        <option value="<%=position.job%>">
+                            <%=position.job%>
+                        </option>
+                        <%})%>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px">
+                <label>照片: </label>
+                <br />
+                <input type="file" name="photo" id="photo">
+                <br />
+                <img src="" id="deal" width="400px">
+            </div>
+            <input id="submit" type="button" value="提交">
+        </form>
+    </div>
+    <div style="padding-top: 45%;padding-left: 92% ;">
+        <a href="/add">
+            <label>返回</label>
+        </a>
+    </div>
+    <%}else{%>
+        <div>提示：请先添加部门和职位</div>
+    <%}%>
+	<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../javascripts/exif.js"></script>
+    <script>
+        let baseImg = '';
+        let maxSize = 500 * 1024; //最大图片质量200kb
+        //图片选择事件
+        let inputPhoto = document.getElementById("photo");
 
-    inputPhoto.onchange=function(){
-        let file=this.files[0];
-        console.log('原文件大小',file.size);
-        minSize(file);
-    }  
-    //压缩函数
-    function minSize(file){
-        let reader=new FileReader();
+        inputPhoto.onchange = function () {
+            let file = this.files[0];
+            console.log('原文件大小', file.size);
+            minSize(file);
+        }
+        //压缩函数
+        function minSize(file) {
+            //此方法为file input元素的change事件
+            //var file = this.files[0];
+            var orientation;
+            //EXIF js 可以读取图片的元信息 https://github.com/exif-js/exif-js
+            EXIF.getData(file, function () {
+                orientation = EXIF.getTag(this, 'Orientation');
+            });
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                getImgData(this.result, orientation, function (data) {
+                    //这里可以使用校正后的图片data了
+                    deal.src = data;
+                    baseImg=data;
+                });
+            }
+            reader.readAsDataURL(file);
+        }
 
-        reader.onload=function(){
-            let result=this.result;
-            console.log('转base64后大小',result.length);
-            let original=document.getElementById("original");
-            let deal=document.getElementById("deal");
-            original.src=result;
 
-            setTimeout(function(){
-                let canvas=document.createElement('canvas');
-                let context=canvas.getContext("2d");
-        
-                canvas.width=original.width;
-                canvas.height=original.height;
+        // reader.onload = function () {
+        //     let result = this.result;
+        //     console.log('转base64后大小', result.length);
+        //     let original = document.getElementById("original");
+        //     let deal = document.getElementById("deal");
+        //     original.src = result;
 
-                context.drawImage(original,0,0);
-                // let qulity=maxSize/result.length;
-                // console.log(maxSize/result.length,maxSize);
-                if(maxSize<result.length){
-                    baseImg=canvas.toDataURL('image/jpeg',0.5);     //压缩质量0.5
-                }else{
-                    baseImg=result;
+        //         setTimeout(function () {
+        //             let canvas = document.createElement('canvas');
+        //             let context = canvas.getContext("2d");
+
+        //             canvas.width = original.width;
+        //             canvas.height = original.height;
+
+        //             context.drawImage(original, 0, 0);
+        //             // let qulity=maxSize/result.length;
+        //             // console.log(maxSize/result.length,maxSize);
+        //             if (maxSize < result.length) {
+        //                 baseImg = canvas.toDataURL('image/jpeg', 0.5); //压缩质量0.5
+        //             } else {
+        //                 baseImg = result;
+        //             }
+        //             deal.src = baseImg;
+        //             console.log('压缩后大小', baseImg.length)
+        //         }, 10);
+        //     }
+
+        //     reader.readAsDataURL(file);
+        // }
+        // ajax异步提交表单
+        let inputSubmit = document.getElementById("submit");
+        inputSubmit.onclick = function () { // 事件监听
+            let formData = new FormData(); //(document.getElementById("newPerson"));
+            let per_id = $('#per_id').val();
+            let per_name = $('#per_name').val();
+            let per_gender = $('#per_gender').val();
+            let per_department = $('#per_department').val();
+            let per_position = $('#per_position').val();
+            let per_photo = inputPhoto.value;
+            console.log(per_id, per_name, per_gender, per_photo);
+
+
+            //数据检测
+            try {
+                if (!per_id) {
+                    throw new Error('缺少编号');
                 }
-                deal.src=baseImg;
-                console.log('压缩后大小',baseImg.length)
-            },10);
-        }
-
-        reader.readAsDataURL(file);
-    }
-    // ajax异步提交表单
-    let inputSubmit=document.getElementById("submit");
-    inputSubmit.onclick=function(){// 事件监听
-        let formData=new FormData();//(document.getElementById("newPerson"));
-        let per_id=$('#per_id').val();
-        let per_name=$('#per_name').val();
-        let per_gender=$('#per_gender').val();
-        let per_department=$('#per_department').val();
-        let per_position=$('#per_position').val();
-        let per_photo=inputPhoto.value;
-        console.log(per_id,per_name,per_gender,per_photo);
-
-
-        //数据检测
-        try{
-            if(!per_id){
-                throw new Error('缺少编号');
+                if (!per_name) {
+                    throw new Error('缺少姓名');
+                }
+                if (!per_gender) {
+                    throw new Error('缺少性别');
+                }
+                if (!per_department) {
+                    throw new Error('缺少部门');
+                }
+                if (!per_position) {
+                    throw new Error('缺少职位');
+                }
+                if (!per_photo) {
+                    throw new Error('缺少照片');
+                }
+            } catch (err) {
+                console.log(err.message);
+                return $('#alert').html(err.message);
             }
-            if(!per_name){
-                throw new Error('缺少姓名');
-            }
-            if(!per_gender){
-                throw new Error('缺少性别');
-            }
-             if(!per_department){
-                 throw new Error('缺少部门');
-             }
-             if(!per_position){
-                 throw new Error('缺少职位');
-             }            
-            if(!per_photo){
-                throw new Error('缺少照片');
-            }             
-        }catch(err){
-            console.log(err.message);
-            return $('#alert').html(err.message);
-        }
 
-        //写入数据
-        formData.append('per_id',per_id);  
-        formData.append('per_name',per_name);  
-        formData.append('per_gender',per_gender);  
-        formData.append('per_department',per_department);
-        formData.append('per_position',per_position);  
-        formData.append('baseImg',baseImg);     
-        // ajax异步发送表单
-        let ajax=new XMLHttpRequest();
+            //写入数据
+            formData.append('per_id', per_id);
+            formData.append('per_name', per_name);
+            formData.append('per_gender', per_gender);
+            formData.append('per_department', per_department);
+            formData.append('per_position', per_position);
+            formData.append('baseImg', baseImg);
+            // ajax异步发送表单
+            let ajax = new XMLHttpRequest();
 
-        ajax.open("post","http://localhost:80/add/person");// 设置路由
-        ajax.send(formData);// 发送
+            ajax.open("post", location.href); // 设置路由
+            ajax.send(formData); // 发送
 
-        ajax.onreadystatechange=function () {
-            if (ajax.readyState===4 && ajax.status===200){
-                //显示提示信息
-                // console.log(ajax.responseText);
-                // let submitFeedBack=JSON.parse(ajax.responseText);
-                $('#alert').html("提示："+ajax.responseText);
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4 && ajax.status === 200) {
+                    //显示提示信息
+                    // console.log(ajax.responseText);
+                    // let submitFeedBack=JSON.parse(ajax.responseText);
+                    $('#alert').html("提示：" + ajax.responseText);
+                }
             }
         }
-    }
 
-</script>
+
+        // @param {string} img 图片的base64
+        // @param {int} dir exif获取的方向信息
+        // @param {function} next 回调方法，返回校正方向后的base64
+        function getImgData(img, dir, next) {
+            var image = new Image();
+            image.onload = function () {
+                var degree = 0,
+                    drawWidth, drawHeight, width, height;
+                drawWidth = this.naturalWidth;
+                drawHeight = this.naturalHeight;
+                //以下改变一下图片大小
+                var maxSide = Math.max(drawWidth, drawHeight);
+                if (maxSide > 1024) {
+                    var minSide = Math.min(drawWidth, drawHeight);
+                    minSide = minSide / maxSide * 1024;
+                    maxSide = 1024;
+                    if (drawWidth > drawHeight) {
+                        drawWidth = maxSide;
+                        drawHeight = minSide;
+                    } else {
+                        drawWidth = minSide;
+                        drawHeight = maxSide;
+                    }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = width = drawWidth;
+                canvas.height = height = drawHeight;
+                var context = canvas.getContext('2d');
+                //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+                switch (dir) {
+                    //iphone横屏拍摄，此时home键在左侧
+                    case 3:
+                        degree = 180;
+                        drawWidth = -width;
+                        drawHeight = -height;
+                        break;
+                        //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+                    case 6:
+                        canvas.width = height;
+                        canvas.height = width;
+                        degree = 90;
+                        drawWidth = width;
+                        drawHeight = -height;
+                        break;
+                        //iphone竖屏拍摄，此时home键在上方
+                    case 8:
+                        canvas.width = height;
+                        canvas.height = width;
+                        degree = 270;
+                        drawWidth = -width;
+                        drawHeight = height;
+                        break;
+                }
+                //使用canvas旋转校正
+                context.rotate(degree * Math.PI / 180);
+                context.drawImage(this, 0, 0, drawWidth, drawHeight);
+                //返回校正图片
+                next(canvas.toDataURL("image/jpeg", .5));
+            }
+            image.src = img;
+        }
+    </script>
 </body>
 </html>

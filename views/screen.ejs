@@ -41,7 +41,7 @@
 	}
 	.err h1{
 		position: absolute;
-		color: #fff;
+		color: #000;
 		text-align: center;
 		width: 100%;
 	}
@@ -54,12 +54,11 @@
 		<div id="carousel">
 			<div class="slick-for"></div>
 		</div>
-		<div id="background"></div>
+		<div id="background"> </div>
 	</div>
-	<script type="text/javascript" src="javascripts/jquery.min.js"></script>
-	<script type="text/javascript" src="javascripts/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="javascripts/slick.min.js"></script>
+	<script type="text/javascript" src="libs/slick-carousel/slick/slick.min.js"></script>
 	<script type="text/javascript" src="javascripts/background2.js"></script>
 	<script type="text/javascript">	
 		//轮播图初始化
@@ -78,16 +77,23 @@
 
 		//websocket事件监听
 		let number=0;	
+		let arr = new Array();
 		$(function () {
 		 	//改过js 原本没有info数组 加上info数组的想法是要输出所有从manage传过来的指令（包括历史）
 		    var info = new Array();
 		    // 字符串
-		    console.log(location.search);
+		    console.log(location);
 		    var n = location.search.slice(1).split('=')[1];
+
+			if(n==null){
+				$('.err').html('<h1>提示:未输入序号</h1>');
+		        $('.err').show();
+				return ;
+			}		    
 
 		    var content = $('#content');
 		    //建立websocket连接
-		    socket = io.connect('http://192.168.1.127');//把这个从localhost改成相应的ip号即可
+		    socket = io.connect(location.origin);//把这个从localhost改成相应的ip号即可
 
 		    //收到server的连接确认
 		    socket.on('open',function(){
@@ -97,14 +103,13 @@
 		        	$('.err').html('');
 		        	$('.err').hide();
 		            console.log(res.length);
+		            //清空图片
 		            if(number!==0){
 		            	for(let i=0;i<number;i++){
 		            		$(".slick-for").slick('slickRemove',number-(1+i));
 		            	}
 		            	number=0;
-		            }
-
-
+		            }		            
 					if(res.length!==0){
 						number=res.length;
 						for(let i=0;i<res.length;i++){
@@ -118,9 +123,6 @@
 					}else{
 						$('#background').fadeIn();
 					}
-		        });
-		        socket.on('back',function(){
-		        	location.reload();
 		        });
 		        //监听滚屏指令
 		        socket.on('playNext',function(){

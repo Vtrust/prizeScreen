@@ -1,126 +1,160 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>
-立功人员展示系统
-</title>
-<style>
-.ziti{
-  font-family: 隶书;
-  color:white;
-  text-align: center;
-  font-size:80px;
-}
-.title{
-  font-family: 华文行楷;
-  color:white;
-  text-align: center;
-  font-size:80px;
-}
-.center{
-  position: fixed;
-  top:40%;
-  width:50%;
-  height: 20%;
-  
-  float: left;
-}
-.centerleft{
-  position: fixed;
-  top:40%;
-  left: 50%;
-  width:50%;
-  height: 20%;
+  <title>
+    立功人员展示系统
+  </title>
+  <style>
+    .ziti {
+      font-family: 隶书;
+      color: white;
+      text-align: center;
+      font-size: 80px;
+    }
 
-  float: left;
-}
-.top{
-  position:fixed;
-  height: 15%;
-  width:100%;
-}
-a:link{
-  text-decoration: none;
-};
-a:visited{
-  text-decoration: none;
-}
-a:hover{
-  text-decoration: none;
-}
-a:active{
-  text-decoration: none;
-}
+    .title {
+      font-family: 华文行楷;
+      color: white;
+      text-align: center;
+      font-size: 80px;
+    }
 
-.change{
-  text-align: center;
-  color: white;
-  padding-top: 40%;
-  font-size: 40px;
-}
+    .center {
+      position: fixed;
+      top: 40%;
+      width: 50%;
+      height: 20%;
 
-li{
-  font-size:90%;
-  line-height: 40px;
-  float: left;
-  margin-left: 1%;
-  margin-bottom: 20px;
-}
-.part{
-  height: 40px;
-  line-height: 40px;
-  width: 100px;
-  text-align: justify;
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  font-family: 隶书;
-  color: white;
-}
+      float: left;
+    }
 
-.part6{
-  height: 80px;
-  line-height: 80px;
-  width: 240px;
-  text-align: justify;
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  font-family: 隶书;
-  color: white;
-  font-size: 80px;
-}
+    .centerleft {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      width: 50%;
+      height: 20%;
 
-.depart{
-  display: inline-block;
-  width: 100%;
-  height: 0;
-}
+      float: left;
+    }
 
-</style>
+    .top {
+      position: fixed;
+      height: 15%;
+      width: 100%;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    ;
+    a:visited {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    a:active {
+      text-decoration: none;
+    }
+
+    .change {
+      text-align: center;
+      color: white;
+      padding-top: 40%;
+      font-size: 40px;
+    }
+
+    li {
+      font-size: 90%;
+      line-height: 40px;
+      float: left;
+      margin-left: 1%;
+      margin-bottom: 20px;
+    }
+
+    .part {
+      height: 40px;
+      line-height: 40px;
+      width: 100px;
+      text-align: justify;
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      font-family: 隶书;
+      color: white;
+    }
+
+    .part6 {
+      height: 80px;
+      line-height: 80px;
+      width: 240px;
+      text-align: justify;
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      font-family: 隶书;
+      color: white;
+      font-size: 80px;
+    }
+
+    .depart {
+      display: inline-block;
+      width: 100%;
+      height: 0;
+    }
+  </style>
 </head>
+
 <body style="background: url(/image/rblue.jpg)">
-<div >
-<div class="top"><a href="index"><div class="ziti"><img src="/image/police.png" width="150px" height="150px"><div class="title">网安支队历年立功授奖展示</div></div></a></div>
-<div class="center">
-<p class="ziti"><a href="/year"><span class="ziti">展示信息</span></a></p>
-</div>
-<div class="centerleft">
-<p class="ziti"><a href="/add"><span class="ziti">后台录入</span></a></p>
-</div>
-<div class="change">
-<ul style="list-style: none;margin-left: 17%;">
-<%
+  <div>
+    <div class="top">
+      <a href="index">
+        <div class="ziti">
+          <img src="/image/police.png" width="150px" height="150px">
+          <div class="title">网安支队历年立功授奖展示</div>
+        </div>
+      </a>
+    </div>
+    <div class="center">
+      <p class="ziti">
+        <a href="/show/year">
+          <span class="ziti">展示信息</span>
+        </a>
+      </p>
+    </div>
+    <div class="centerleft">
+      <p class="ziti">
+        <a href="/manage">
+          <span class="ziti">后台管理</span>
+        </a>
+      </p>
+    </div>
+    <div class="change">
+      <ul style="list-style: none;margin-left: 17%;">
+        <%
   for(var i=1;i<11;i++)
   {
 %>
-    <a href="/index?n=<%=i%>"><li ><span class="part"><%=i%><i class="depart"></i></span></li></a>
-<%
+          <a href="/index?n=<%=i%>">
+            <li>
+              <span class="part">
+                <%=i%>
+                  <i class="depart"></i>
+              </span>
+            </li>
+          </a>
+          <%
   }
 %>
-</ul>
+      </ul>
 
-</div>
-</div>
+    </div>
+  </div>
 </body>
+
 </html>

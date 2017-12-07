@@ -150,7 +150,7 @@ exports.FindDepartmentPerson = function(data,callback){
         from person left join per_pri on person.id = per_pri.id \
         where year <= '"+data.year+"' and item='"+data.item+"' and detail ='"+data.detail+"'and department ='"+data.department+"') \
         ORDER BY lpad(id,10,'0');";
-    console.log(sql);
+    //console.log(sql);
     connection.query(sql,function(err,result){
         if(!err){
             var res = hasName(result);
@@ -362,8 +362,9 @@ exports.insertDepartment=function(department,callback){
 }
 
 exports.insertPosition=function(position,callback){
-    var sql = "insert into position (job) value('"+position+"');"
-    connection.query(sql,position,function(err,result){
+    var sql = "insert into positio (job) value('"+position+"');"
+    console.log(sql);
+    connection.query(sql,function(err,result){
     if(err){
         console.log('[Insert error] - ',err.message);
         return;
