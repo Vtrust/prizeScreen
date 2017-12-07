@@ -1,2 +1,2 @@
-# websocket-example
-this is a websocket-example based on socket.io.
+# 多屏荣誉展示系统
+
