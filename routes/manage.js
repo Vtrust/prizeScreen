@@ -40,6 +40,7 @@ router.post('/adddeparment', Manage.addDepartment);
 router.post('/addposition',Manage.addPosition);
 
 //============================================================================
+// TODO:添加数据库管理
 // 人员管理
 // 添加新人
 router.get('/personAdd', Manage.showPerAdd);
