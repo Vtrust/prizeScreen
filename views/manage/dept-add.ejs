@@ -1,0 +1,107 @@
+<%-include('header')%>
+<div class="row">
+  <div class="layui-col-md6" style="font-size:20px;font-weight:700">新增奖项</div>
+  <div class="layui-col-md6">
+    <span class="layui-breadcrumb" style="float:right">
+      <a href="">奖项管理</a>
+      <a>
+        <cite>新增奖项</cite>
+      </a>
+    </span>
+  </div>
+  <div class="layui-col-md10">
+   <form class="layui-form" id="newdepartment" style="margin:20px" method="post" enctype="multipart/form-data">
+    <blockquote class="layui-elem-quote">新增部门/职位</blockquote>
+    <div class="layui-form-item">
+      <label class="layui-form-label">部门</label>
+      <div class="layui-input-block">
+        <input class="layui-input" id="department" name="department" type="text" placeholder="department" />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <input class="layui-btn" id="submit1" type="button" value="添加">
+      </div>
+    </div>
+  </form>
+  <form class="layui-form" id="newposition" style="margin:20px" method="post" enctype="multipart/form-data">
+    <div class="layui-form-item">
+      <label class="layui-form-label">职位</label>
+      <div class="layui-input-block">
+        <input class="layui-input" id="position" name="position" type="text" placeholder="position" />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <input class="layui-btn" id="submit2" type="button" value="添加">
+      </div>
+    </div>
+  </form>
+</div>
+</div>
+<div class="layui-col-md10">
+  <div style="margin:20px">
+    <blockquote class="layui-elem-quote">所有部门/职位</blockquote>
+    <table class="layui-table" >
+      <colgroup>
+        <col width="200">
+        <col width="200">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>部门</th>
+          <th>职位</th>
+        </tr> 
+      </thead>
+
+      <%if(departments.length>positions.length){%>
+        <%for(var i=0;i<positions.length;i++){%>
+          <tbody>
+            <tr>
+              <th><%=departments[i].post%></th>
+              <th><%if(i<positions.length){%><%=positions[i].job%><%}%></th>
+            </tr> 
+          </tbody>
+        <%}%>
+      <%}else{%>
+        <%for(var i=0;i<positions.length;i++){%>
+          <tbody>
+            <tr>
+              <th><%if(i<departments.length){%><%=departments[i].post%><%}%></th>
+              <th><%=positions[i].job%></th>
+            </tr> 
+          </tbody>
+        <%}%>
+      <%}%>
+
+    </table>
+  </div>
+</div>
+
+<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
+<script src="/libs/layui/layui.all.js"></script>
+<script type="text/javascript">
+    $('#submit1').click(function(){// 事件监听
+      let formData=new FormData(document.getElementById("newdepartment"));
+      console.log('formData2');
+      // ajax异步发送表单
+      let ajax=new XMLHttpRequest();
+
+      ajax.open("post",location.origin+"/manage/adddeparment");// 设置路由
+      ajax.send(formData);// 发送
+
+    });
+    $('#submit2').click(function(){// 事件监听
+      let formData=new FormData(document.getElementById("newposition"));
+      console.log('formData2');
+      // ajax异步发送表单
+      let ajax=new XMLHttpRequest();
+
+      ajax.open("post",location.origin+"/manage/addposition");// 设置路由
+      ajax.send(formData);// 发送
+
+    });
+
+</script>
+<%-include('footer')%>

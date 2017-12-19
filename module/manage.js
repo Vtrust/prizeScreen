@@ -93,6 +93,25 @@ exports.info = function (req, res) {
 
     });
 }
+exports.showAddDepartment = function (req, res){
+ db.FindDepartment(function (dat1) {
+    db.FindPosition(function (dat2) {
+        res.render('manage/dept-add', {
+            departments: dat1,
+            positions: dat2,
+        });
+    })
+});
+}
+
+exports.showAddprize = function (req, res){
+    db.findprizeall(function (dat3) {
+        res.render('manage/pri-add', {
+            prize: dat3
+        });
+    })
+
+}
 
 exports.addPrize = function (req, res) {
     var form = new multiparty.Form();
@@ -103,9 +122,9 @@ exports.addPrize = function (req, res) {
         }
         console.log(fields);
         var prizeArray = new Array();
-        prizeArray[0] = fields.year;
-        prizeArray[1] = fields.prize;
-        prizeArray[2] = fields.detail;
+        prizeArray[0] = fields.pri_year;
+        prizeArray[1] = fields.pri_prize;
+        prizeArray[2] = fields.pri_level;
         db.insertPrize(prizeArray);
     });
 }
@@ -237,4 +256,34 @@ exports.search = function (req, res) {
     db.FindPersonByNameOrId(req.query, function (data) {
         res.send(data);
     })
+}
+
+exports.showScreenSet = function (req, res){
+    res.render('manage/screenSet');
+}
+
+exports.setAutoplaySpeed = function (req, res){
+    var form = new multiparty.Form();
+    form.parse(req, function (err, fields, files) {
+        if (err) {
+            console.log('错误');
+            return;
+        }
+        console.log(fields);
+        var speed = fields.autoplaySpeed;
+        console.log(speed);
+        clearInterval(global.autoplay);
+        global.autoplay = setInterval(function () {
+            for (let i = 0; i < global.keys.length; i++) {
+                setTimeout(function () {
+                    if (global.screen[global.keys[i]])
+                        global.screen[global.keys[i]].playNext();
+                }, 100);
+            }
+            console.log("翻页信号发送成功！" + new Date());
+        }, speed*1000);
+        res.send({
+            code:1
+        })
+    });
 }

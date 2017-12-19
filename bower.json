@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "slick-carousel": "^1.8.1",
-    "jquery": "jqurey#^3.2.1"
+    "jquery": "jqurey#^3.2.1",
+    "vue": "^2.5.9"
   }
 }

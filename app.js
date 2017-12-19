@@ -29,6 +29,8 @@ routes(app);
 screen = []; //存储socket
 keys = []; //存储屏幕序号
 screenNum = 0; //在线屏幕个数
+autoplay = {}; //
+autoplaySpeed = 4000; //默认播放速度4s
 
 //设置日志级别
 io.set('log level', 1);

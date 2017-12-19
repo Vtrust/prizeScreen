@@ -8,69 +8,71 @@
   <title>Document</title>
   <link rel="stylesheet" href="/libs/layui/css/layui.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+  }
 
-    #app {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      width: 100%;
-    }
+  #app {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
 
-    .container {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      width: 100%;
-    }
+  .container {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
 
-    .header {
-      height: 60px;
-      line-height: 60px;
-      background: #393D49;
-      color: #fff;
-    }
+  .header {
+    height: 60px;
+    line-height: 60px;
+    background: #393D49;
+    color: #fff;
+  }
 
-    .logo {
-      width: 230px;
-      font-size: 20px;
-      border-color: rgba(238, 241, 146, 0.3);
-      border-right-width: 1px;
-      border-right-style: solid;
-    }
+  .logo {
+    width: 230px;
+    font-size: 20px;
+    border-color: rgba(238, 241, 146, 0.3);
+    border-right-width: 1px;
+    border-right-style: solid;
+  }
 
-    .logo i {
-      font-size: 25px;
-      margin-left: 20px;
-    }
+  .logo i {
+    font-size: 25px;
+    margin-left: 20px;
+  }
 
-    .main {
-      display: flex;
-      position: absolute;
-      top: 60px;
-      width: 100%;
-      bottom: 0px;
-      overflow: hidden;
-    }
+  .main {
+    display: flex;
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    bottom: 0px;
+    overflow: hidden;
+  }
 
-    .menu-expanded {
-      flex: 0 0 230px;
-      width: 230px;
-      background: #393D49;
-      border-color: rgba(238, 241, 146, 0.3);
-      border-top-width: 1px;
-      border-top-style: solid;
-    }
+  .menu-expanded {
+    flex: 0 0 230px;
+    width: 230px;
+    background: #393D49;
+    border-color: rgba(238, 241, 146, 0.3);
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
 
-    .content-container {
-      flex: 1;
-      overflow-y: scroll;
-      padding: 20px;
-    }
-  </style>
+  .content-container {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 20px;
+  }
+
+ 
+</style>
 </head>
 <body>
   <div id="app">
@@ -78,14 +80,15 @@
       <div class="header">
         <div class="logo">
           <i class="layui-icon"> &#xe631;</i>管理平台</div>
-      </div>
-      <div class="main">
-        <aside class="menu-expanded">
-          <%-include('components/nav-tree')%>
-        </aside>
-        <section class="content-container">
-         
-        </section>
+        </div>
+        <div class="main">
+          <aside class="menu-expanded">
+            <%-include('components/nav-tree')%>
+          </aside>
+          <section class="content-container">
+            welcome!
+          </section>
+        </div>
       </div>
     </div>
   </div>

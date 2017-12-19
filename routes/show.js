@@ -20,4 +20,7 @@ router.get('/persons', Show.showPersons);
 //选择获奖的一个人
 router.get('/person',Show.showPerson);
 
+//选择获奖的一个人
+// router.get('/back',Show.showBack);
+
 module.exports = router;

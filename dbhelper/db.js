@@ -2,9 +2,12 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'19970420',
+     password:'19970420',
+    // password:'root',
+    //database:'screenShow'
     database:'medal'
 });
+
 connection.connect();
 
 function hasName(result){
@@ -323,7 +326,7 @@ exports.FindDepartment = function(callback){
     });
 };
 exports.FindPosition = function(callback){
-    var sql = "select * from position";
+    var sql = "select * from positions";
     connection.query(sql,function(err,result){
         if(!err){
             var res = hasName(result);
@@ -362,7 +365,7 @@ exports.insertDepartment=function(department,callback){
 }
 
 exports.insertPosition=function(position,callback){
-    var sql = "insert into positio (job) value('"+position+"');"
+    var sql = "insert into positions (job) value('"+position+"');"
     console.log(sql);
     connection.query(sql,function(err,result){
     if(err){

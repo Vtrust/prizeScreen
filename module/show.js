@@ -1,7 +1,14 @@
 const db = require('../dbhelper/db');//引入数据库
 
 exports.index = function (req, res) {
-    res.render('index');
+    var years;
+    db.FindYear(function (data) {
+        years = data;
+        console.log(years[1].year);
+        res.render('show/show-index', {
+            years: years
+        });
+    });
 }
 
 exports.showYears = function (req, res) {
@@ -31,6 +38,7 @@ exports.showItem = function (req, res) {
 exports.showPrize = function (req, res) {
     var year = req.query.year;
     var item = req.query.item;
+    console.log(year,item,'sdsds')
     db.FindPrize(year, item, function (dat) {
         result = dat;
         console.log(result);
@@ -51,7 +59,7 @@ exports.showPerson = function (req, res) {
     db.FindPersonPrize(id, function (dat) {
         result = dat;
         console.log(result);
-        res.render('show/show-person', {
+        res.render('show/old-show-person', {
             year: year,
             item: item,
             prize: prize,
@@ -123,7 +131,7 @@ exports.showPersons = function (req, res) {
                         }, 100);
                     }
 
-                    setInterval(function () {
+                    global.autoplay = setInterval(function () {
                         for (let i = 0; i < global.keys.length; i++) {
                             setTimeout(function () {
                                 if (global.screen[global.keys[i]])
@@ -131,7 +139,7 @@ exports.showPersons = function (req, res) {
                             }, 100);
                         }
                         console.log("翻页信号发送成功！" + new Date());
-                    }, 1000);
+                    }, global.autoplaySpeed);
 
                     console.log(numData, "--每个屏幕人员分配");
                     console.log(screenSet, "--屏幕发送序列号");

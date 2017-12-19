@@ -105,19 +105,19 @@
   </style>
 </head>
 
-<body style="background: url(/image/rblue.jpg)">
+<body style="background: url(/image/background.jpg)">
   <div style="text-align: right;">
     <div class="top">
       <a href="/back">
         <div>
-          <img src="/image/police.png" width="150px" height="150px">
+          <img src="/image/logo.png" width="150px">
           <div class="zitib">网安支队历年立功授奖展示</div>
         </div>
       </a>
     </div>
     <div class="center">
       <%if(year.length<=6){for(var i=0;i<year.length;i++){%>
-        <a href='item?year=<%= year[i].year%>'>
+        <a href='/show/item?year=<%= year[i].year%>'>
           <span class="ziti">
             <%= year[i].year%>年&nbsp &nbsp
           </span>
@@ -125,7 +125,7 @@
         <%}}else{%>
           <ul style="list-style: none;">
             <%for(var i=0;i<year.length;i++){%>
-              <a href='item?year=<%=year[i].year%>'>
+              <a href='/show/item?year=<%=year[i].year%>'>
                 <li>
                   <span class="part">
                     <%=year[i].year%>年

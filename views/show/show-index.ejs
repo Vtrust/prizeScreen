@@ -13,31 +13,27 @@
 	</div>
 	<div id="show-container">
 		<div class="show-main">
-			<a href="/show/prize?year=<%=year%>&item=<%= item%>">
-				<div class="show-title">
-					<h1>网安支队历年立功授奖情况</h1>
-				</div>
-			</a>
+			<div class="show-title">
+				<h1>网安支队历年立功授奖情况</h1>
+			</div>
 			<div class="show-content">
-				<a href="/show">
-					<div class="show-logo">
-						<img src="/image/logo.png" alt="">
-					</div>
-				</a>
+				<div class="show-logo">
+					<img src="/image/logo.png" alt="">
+				</div>
 				<div class="show-show">
 					<div class="slick-for">
-						<%if(person.length&&person.length>15){%>
-							<%for(var i=0;i<parseInt(person.length/15);i++){%>
+						<%if(years.length&&years.length>15){%>
+							<%for(var i=0;i<parseInt(years.length/15);i++){%>
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
-										<%if(person[j]){%>
+										<%if(years[j]){%>
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/person?id=<%=person[j+i*15].id%>&item=<%=item%>&year=<%=year%>&prize=<%=detail%>'>
+												<a href='/show/item?year=<%= years[j+i*15].year%>'>
 													<div class="show-iiitem">
-														<p><%=person[j+i*15].name%></p>
+														<p><%=years[j+i*15].year%></p>
 													</div>
 												</a>
 											</div>
@@ -54,13 +50,13 @@
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
-										<%if(person[j]){%>
+										<%if(years[j]){%>
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/person?id=<%=person[j].id%>&item=<%=item%>&year=<%=year%>&prize=<%=detail%>'>
+												<a href='/show/item?year=<%= years[j].year%>'>
 												<div class="show-iiitem">
-													<p><%=person[j].name%></p>
+													<p><%=years[j].year%></p>
 												</div>
 												</a>
 											</div>

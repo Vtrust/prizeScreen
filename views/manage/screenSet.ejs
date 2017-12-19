@@ -1,0 +1,65 @@
+<%-include('header')%>
+<div class="layui-row">
+	<div class="layui-col-md6" style="font-size:20px;font-weight:700">
+		屏幕设置
+	</div>
+	<div class="layui-col-md6">
+		<span class="layui-breadcrumb" style="float:right">
+			<a href="">屏幕管理</a>
+			<a>
+				<cite>屏幕设置</cite>
+			</a>
+		</span>
+	</div>
+</div>
+<div class="layui-row manage-content">
+	<div class="layui-col-mod10">
+		<blockquote class="layui-elem-quote">轮播图切换时间</blockquote>
+		<form class="layui-form" id="autoplaySpeed"  method="post" enctype="multipart/form-data">
+			<div class="layui-form-item">
+				<label class="layui-form-label">时间间隔(秒)</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" id="autoplaySpeed" name="autoplaySpeed" type="number" placeholder="autoplaySpeed" />
+				</div>
+				<div class="layui-input-inline">
+					<input class="layui-btn" id="submit1" type="button" value="设置">
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
+<script src="/libs/layui/layui.all.js"></script>
+<script type="text/javascript">
+    $('#submit1').click(function(){// 事件监听
+      let formData=new FormData(document.getElementById("autoplaySpeed"));
+      // ajax异步发送表单
+      let ajax=new XMLHttpRequest();
+
+      ajax.open("post",location.origin+"/manage/setAutoplaySpeed");// 设置路由
+      ajax.send(formData);// 发送
+
+      ajax.onreadystatechange = function () {
+        if (ajax.readyState === 4 && ajax.status === 200) {
+          //显示提示信息
+          console.log(ajax.responseText);
+          let submitFeedBack=JSON.parse(ajax.responseText);
+          if(submitFeedBack.code === 1){
+          	layui.use('layer', function () {
+          		var layer = layui.layer;
+          		layer.msg('设置成功');
+          	});
+          }else{
+          	layui.use('layer', function () {
+          		var layer = layui.layer;
+          		layer.msg('设置失败');
+          	});
+          }
+
+        }
+      }      
+
+    });
+
+</script>
+<%-include('footer')%>
