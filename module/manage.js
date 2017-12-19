@@ -79,6 +79,24 @@ exports.perAdd = function (req, res) {
     });
 }
 
+exports.ShowPerEdit = function (req, res) {
+    res.render('manage/per-edit',{
+        persons:[{
+            name:'name',
+            gender:'gender'
+        },{
+            name:'name',
+            gender:'gender'
+        },{
+            name:'name',
+            gender:'gender'
+        },{
+            name:'name',
+            gender:'gender'
+        },]
+    });
+}
+
 exports.info = function (req, res) {
     db.FindDepartment(function (dat1) {
         db.FindPosition(function (dat2) {

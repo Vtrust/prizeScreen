@@ -34,7 +34,7 @@ for(let j=0;j<i;j++){
         console.log(j,message);
     });
 }
-/*
+
 //price
 let year=['2015','2016'];
 let items=['专项','非专项'];
@@ -66,7 +66,7 @@ for(let j=0;j<i;j++){
             }
             console.log(j,message);
         });
-}*/
+}
    
 
 

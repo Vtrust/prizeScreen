@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+<body>
+    <div class="top"><a href="/index"><div class="ziti"><img src="/image/police.png" width="150px" height="150px"><div class="ziti">立功人员展示系统</div></div></a></div>
+    <div class="center">
+        <div class="prize">
+            <h1>添加奖项</h1>
+            <form  method="post" id="newprize">
+                <label>年份：</label>
+                <input type="text" name="year" id="year"/>
+                <label>奖项：</label>
+                <input type="text" name="prize" id="prize"/>
+                <label>奖项等级：</label>
+                <input type="text" name="detail" id="detail"/>
+                <input id="submit1" type="button" value="添加">
+            </form>
+            <p style="color: red">填写示例：年份：2017，奖项：专项，奖项等级：一等功</p>
+            已有奖项：
+            <%
+            for(var i=0;i<prize.length;i++)
+            {
+                %>
+                <%=prize[i].year%>年<%=prize[i].item%><%=prize[i].detail%>&nbsp
+                <%
+            }
+            %>
+        </div>
+        <div class="department">
+            <h1>添加部门或职务</h1>
+            <form id="newdepartment" method="post">
+                <label>部门：</label>
+                <input type="text" name="department" id="department" />
+                <input type="button" id="submit2" value="添加部门"/>
+            </form>
+            <br/>
+            <form id="newposition" method="post">
+                <label>职务：</label>
+                <input type="text" name="position" id="position">
+                <input type="button" id="submit3" value="添加职务">
+            </form>
+            <div style="margin-top: 60px">
+                已有部门：
+                <%
+                for(var i=0;i<departments.length;i++)
+                {
+                    %>
+                    <%=departments[i].post%>&nbsp
+                    <%
+                }
+                %>
+                <br/>
+                已有职务：
+                <%
+                for(var i=0;i<positions.length;i++)
+                {
+                    %>
+                    <%=positions[i].job%>&nbsp
+                    <%
+                }
+                %>
+            </div>
+            <br/><br/><br/><br/>
+            <a href="/add">返回</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let inputSubmit1=document.getElementById("submit1");
+    inputSubmit1.onclick=function(){// 事件监听
+        let formData=new FormData(document.getElementById("newprize"));
+        console.log('formData1');
+        // ajax异步发送表单
+        let ajax=new XMLHttpRequest();
+
+        ajax.open("post","http://localhost:80/add/addprize");// 设置路由
+        ajax.send(formData);// 发送
+    }
+    let inputSubmit2=document.getElementById("submit2");
+    inputSubmit2.onclick=function(){// 事件监听
+        let formData=new FormData(document.getElementById("newdepartment"));
+        console.log('formData2');
+        // ajax异步发送表单
+        let ajax=new XMLHttpRequest();
+
+        ajax.open("post","http://localhost:80/add/adddeparment");// 设置路由
+        ajax.send(formData);// 发送
+
+    }
+    let inputSubmit3=document.getElementById("submit3");
+        inputSubmit3.onclick=function(){// 事件监听
+            let formData=new FormData(document.getElementById("newposition"));
+            console.log('formData3');
+            // ajax异步发送表单
+            let ajax=new XMLHttpRequest();
+
+        ajax.open("post","http://localhost:80/add/addposition");// 设置路由
+        ajax.send(formData);// 发送
+    }
+
+</script>
+</body>
+</html>

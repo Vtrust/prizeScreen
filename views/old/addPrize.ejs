@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add_prize</title>
+    <link rel="stylesheet" href="/css/animate.css">
+</head>
+
+<body>
+<div class="top"><a href="/index"><div class="ziti"><img src="/image/police.png" width="150px" height="150px"><div class="zitib">立功人员展示系统</div></div></a></div>
+<div class="center">
+<div style="float: left;">
+    <%if(years.length>0&&departments.length>0){%>
+    <div>
+        <h1 class="" style="display: block;" id ="test">奖项信息</h1>
+        <h3 id="alert"></h3>
+    </div>
+         
+    <div style="margin-bottom: 20px">
+        <label>年份: </label>
+        <select  id="pri_year" name="pri_year">
+            <option value="" selected="selected">-未选择-</option>
+            <%years.forEach(function(year){%>
+            <option value="<%=year.year%>"><%=year.year%></option>
+            <%})%>
+        </select>
+    </div>
+    <div>
+        <label>奖项: </label>
+        <select  id="pri_item" name="pri_item">
+            <option selected value="">-请先选择年份-</option>
+        </select>
+    </div>        
+    <div>
+        <h2>部门信息</h2>  
+        <div style="margin-bottom: 20px">
+            <label>部门: </label>
+            <select  id="pri_department" name="pri_department" >
+                <option selected value="">-未选择-</option>
+                <%departments.forEach(function(department){%>
+                <option value="<%=department.department%>"><%=department.department%></option>
+                <%})%>
+            </select>
+        </div>               
+        <div>
+            <label>该部门下搜索: </label>
+            <input id="searchDepartment"  name="searchDepartment" type="text" placeholder="输入姓名或警员号" />
+            <input id="personSearch" type="button" value="搜索">    
+            <h4>搜索结果</h4>  
+            <div id="searchDepartmentRes"></div>
+        </div>
+        </div>
+        </div>            
+        <div class="getPrizeData">
+            <h3>曾经获奖: </h3>
+            <div id="GetPrize"></div>
+        </div>
+        <div class="getPrizeData">
+            <h3>曾未获奖:</h3>
+            <div id="unGetPrize"></div>
+        </div>
+        <h2>已选的人</h2>  
+        <div id="choosePerson">
+            <div id="choosePersonEnd" class="clear"></div>
+        </div>
+        <input id="reflash" type="button" value="刷新">     
+        <input id="submit" type="button" value="提交">         
+    </div>
+<div style="padding-top: 50%;padding-left: 92%">
+<a href="/add"><label>返回</label></a>
+</div>
+<%}else{%>
+    <div>提示：请先录入奖项和人员信息</div>
+<%}%>
+<script>
+    let host="http://localhost:80";
+
+    
+    console.log(location.href.split('/'),location)
+
+    // 添加奖项代码
+    let message1="-请先选择年份-";
+    let message2="-请先选择奖项-";
+    let message3="-请选择或输入姓名-";
+    let message4="-未选择-";
+
+    let searchData={
+        year:"",
+        prize:"",
+        department:""
+    };//标识年份，奖项，部门是否选择
+
+    //监听搜索框回车
+    let inputSearchDepartment=document.getElementById("searchDepartment");
+    inputSearchDepartment.onkeydown=function(event){// 事件监听
+        if(event.keyCode===13){
+            departmentPersonSearch();
+        }
+       
+    }
+    //监听搜索按钮
+    let buttomPersonSearch=document.getElementById("personSearch");
+    buttomPersonSearch.onclick=function(){
+        console.log("buttomPersonSearch");
+        departmentPersonSearch();
+    }
+
+    function departmentPersonSearch(){
+        if(searchData.department!==""){
+        resetOption("searchDepartmentRes","",false);
+        let search=inputSearchDepartment.value;
+        // ajax异步查询
+        let ajax=new XMLHttpRequest();
+
+        ajax.open("get",location.host+"/manage/prize/search?data="+search+"&department="+searchData.department,true);// 设置路由
+        ajax.send();// 发送
+
+        ajax.onreadystatechange=function () {
+            if (ajax.readyState===4 && ajax.status===200){
+                let resData=JSON.parse(ajax.responseText);
+                if(resData.err!=='1'){
+                    let searchDepartmentRes=document.getElementById("searchDepartmentRes");
+                    let positionFlag=0;
+                    if(!resData.length||resData.length===0){
+                        return resetOption("searchDepartmentRes","",false,"无结果！")
+                    }
+                    resData.forEach(function(person,index){
+                        //创造元素
+                        let div=document.createElement("div");
+                        let clearDiv1=document.createElement("div");
+                        //属性赋值
+                        div.onclick=function(event){
+                            selectPerson(event,this)
+                        };
+                        clearDiv1.setAttribute('class','clear');
+                        div.setAttribute('class','onePerson');
+                        div.setAttribute('prizeFlag',2);
+                        div.setAttribute('personID',person.id);
+                        var innerData="<img class=\"onePersonImg\" src=\""+host+"/image/headers/"+person.pic+"\"/>\
+                                            <p class=\"onePersonID\">警员号："+person.id+"</p>\
+                                            <p class=\"onePersonName\">"+person.name+"</p>"
+                        div.innerHTML=innerData;
+                        div.setAttribute('positionFlag',positionFlag);
+                        searchDepartmentRes.appendChild(div);
+                        positionFlag++;
+                        if(resData.length===index+1){
+                            searchDepartmentRes.appendChild(clearDiv1);
+                        }
+                    })                        
+                }
+            }
+        }            
+        }
+    }
+
+    //ajax监听年份选择
+    let inputPrizeYear=document.getElementById("pri_year");
+    inputPrizeYear.onchange=function(){// 事件监听
+        let year=inputPrizeYear.value;
+
+        //复位
+        resetOption("pri_item",message1);
+        resetOption("alert","",false);
+        resetOption("unGetPrize","",false);
+        resetOption("GetPrize","",false);
+        resetOption("choosePerson","",false,"<div id=\"choosePersonEnd\" class=\"clear\"></div>");
+
+        if(year!==""){
+            searchData.year=year;
+
+            // ajax异步查询奖项
+            let ajax=new XMLHttpRequest();
+
+            ajax.open("get",location.origin+"/manage/prize/year?year="+year,true);// 设置路由
+            ajax.send();// 发送
+
+            ajax.onreadystatechange=function () {
+                 if (ajax.readyState===4 && ajax.status===200){// 
+                    let prizes=JSON.parse(ajax.responseText);
+                    let select=document.getElementById("pri_item");
+                    
+                    if(prizes.err!==1){
+                        select.innerHTML="<option value selected>-未选择-</option>";
+                        prizes.forEach(function(prize){
+                            let option=document.createElement("option");
+                            option.value=prize.item+" "+prize.detail;
+                            option.innerHTML=prize.item+" "+prize.detail;
+                            select.appendChild(option);
+                        })
+                    }        
+                }
+            }
+        }else{
+            searchData.year="";
+            searchData.prize="";            
+        }
+    }
+
+    //ajax监听奖项选择
+    let inputPrize=document.getElementById("pri_item");
+    inputPrize.onchange=function(){// 事件监听
+        resetOption("alert","",false);
+        resetOption("unGetPrize","",false);
+        resetOption("GetPrize","",false);
+        let prize=inputPrize.value;
+        if(prize!==""&&searchData.year!==""){
+            searchData.prize=prize;
+            personSearch();
+        }else{
+            //复位
+            searchData.prize="";
+        }
+    }
+
+
+    //ajax监听部门选择
+    let inputDepartment=document.getElementById("pri_department");
+    inputDepartment.onchange=function(){// 事件监听
+        resetOption("alert","",false);
+        resetOption("searchDepartmentRes","",false);
+        let department=inputDepartment.value;
+        if(department!==""){
+            searchData.department=department;
+            personSearch();
+        }else{
+            searchData.department="";
+        }
+    }
+
+    //查找该部门曾经获奖的人和不曾获奖的人
+    function personSearch(){
+        resetOption("choosePerson","",false,"<div id=\"choosePersonEnd\" class=\"clear\"></div>");
+        if(searchData.year!==""&&searchData.prize!==""&&searchData.department!==""){
+            let GetPrize=document.getElementById("GetPrize")
+            let unGetPrize=document.getElementById("unGetPrize");
+            GetPrize.innerHTML="";
+            unGetPrize.innerHTML=""; 
+
+            // ajax异步查询
+            let ajax=new XMLHttpRequest();
+
+            ajax.open("get",location.origin+"/manage/prize/person?year="+searchData.year+"&prize="+searchData.prize+"&department="+searchData.department,true);// 设置路由
+            ajax.send();// 发送
+
+            ajax.onreadystatechange=function () {
+                 if (ajax.readyState===4 && ajax.status===200){// 
+                    let persons=JSON.parse(ajax.responseText);
+                    if(persons.err!==1){
+                        let positionFlag=0;
+                        let unPositionFlag=0;
+
+                        persons.forEach(function(person,index){
+                            //创造元素
+                            let div=document.createElement("div");
+                            let clearDiv1=document.createElement("div");
+                            let clearDiv2=document.createElement("div");
+                            //属性赋值
+                            div.onclick=function(event){
+                                selectPerson(event,this)
+                            };
+                            clearDiv1.setAttribute('class','clear');
+                            clearDiv2.setAttribute('class','clear');
+                            div.setAttribute('class','onePerson');
+                            div.setAttribute('prizeFlag',person.prize);
+                            div.setAttribute('personID',person.id);
+                            var innerData="<img class=\"onePersonImg\" src=\""+host+"/image/headers/"+person.pic+"\"/>\
+                                                <p class=\"onePersonID\">警员号："+person.id+"</p>\
+                                                <p class=\"onePersonName\">"+person.name+"</p>"
+                            div.innerHTML=innerData;
+                            if(person.prize==='1'){
+                                div.setAttribute('positionFlag',positionFlag);
+                                GetPrize.appendChild(div);
+                                positionFlag++;
+                            }else if(person.prize==='0'){
+                                div.setAttribute('positionFlag',unPositionFlag);
+                                unGetPrize.appendChild(div);
+                                unPositionFlag++;
+                            }
+                            if(persons.length===index+1){
+                                GetPrize.appendChild(clearDiv1);
+                                unGetPrize.appendChild(clearDiv2);
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+    //选人事件
+    function selectPerson(event,thisE){
+        event.stopPropagation();//停止事件冒泡
+        let choosePerson=document.getElementById("choosePerson");
+        let choosePersonCh=choosePerson.children;
+        let thisID=thisE.getAttribute('personID');
+        for(let i=0;i<choosePersonCh.length;i++){
+            let id=choosePersonCh[i].getAttribute('personID');
+            if(id===thisID){
+                resetOption('alert',"",false,"该人物已选择！");
+                return;
+            }
+        }
+        thisE.classList.add("animated");
+        thisE.classList.add("zoomIn");
+        thisE.onclick=function(event){
+            event.stopPropagation();//停止事件冒泡
+            this.onclick=function(event){
+                selectPerson(event,this)
+            }
+            //删除时的位置重定位
+            if(this.getAttribute('prizeFlag')==='1'){
+                let children=GetPrize.children;
+                let thisFlag=this.getAttribute('positionFlag')
+                for(let i=0;i<children.length;i++){
+                    let otherFlag=children[i].getAttribute('positionFlag')
+                    if(otherFlag===null){
+                        thisFlag=i;
+                        break;
+                    }
+                    if(otherFlag>thisFlag){
+                        thisFlag=i;
+                        break;
+                    }
+                }
+                GetPrize.insertBefore(this,GetPrize.childNodes[thisFlag]);
+            }else if(this.getAttribute('prizeFlag')==='0'){
+                let children=unGetPrize.children;
+                let thisFlag=this.getAttribute('positionFlag')
+                for(let i=0;i<children.length;i++){
+                    let otherFlag=children[i].getAttribute('positionFlag')
+                    if(otherFlag===null){
+                        thisFlag=i;
+                        break;
+                    }
+                    if(otherFlag>thisFlag){
+                        thisFlag=i;
+                        break;
+                    }
+                }
+                unGetPrize.insertBefore(this,unGetPrize.childNodes[thisFlag]);
+            }else if(this.getAttribute('prizeFlag')==='2'){
+                let children=searchDepartmentRes.children;
+                let thisFlag=this.getAttribute('positionFlag')
+                for(let i=0;i<children.length;i++){
+                    let otherFlag=children[i].getAttribute('positionflag')
+                    if(otherFlag===null){
+                        //console.log("choosePerson null",otherFlag,thisFlag);
+                        thisFlag=i;
+                        break;
+                    }
+                    if(otherFlag> thisFlag){
+                        //console.log("choosePerson 大于",otherFlag,thisFlag);
+                        thisFlag=i;
+                        break;
+                    }
+                }
+                searchDepartmentRes.insertBefore(this,searchDepartmentRes.childNodes[thisFlag]);
+            }
+        }
+        choosePerson.insertBefore(thisE,choosePerson.childNodes[0])
+    }
+
+    //ajax异步提交表单
+    let inputSubmit=document.getElementById("submit");
+    inputSubmit.onclick=function(){// 事件监听
+        let chooseChildren=document.getElementById("choosePerson").children;
+        let choosePerson=[];
+        for(let i=0;i<chooseChildren.length;i++){
+            let id=chooseChildren[i].getAttribute('personID');
+            if(id!==null){
+                  choosePerson.push(id);
+            }
+        }
+        try{
+            if(searchData.year===""){
+                throw new Error("请选择年份！");
+            };
+            if(searchData.prize===""){
+                throw new Error("请选择奖项！");
+            };
+            if(searchData.department===""){
+                throw new Error("请选择部门！");
+            };
+            if(choosePerson.length<=0){
+                throw new Error("请选择获奖人！");
+            }
+        }catch(err){
+            return resetOption('alert',"",false,err.message);
+        }      
+        let formData=new FormData();
+        formData.append('choosePerson',choosePerson);
+        formData.append('prize',searchData.year+" "+searchData.prize);
+        // ajax异步发送表单
+        let ajax=new XMLHttpRequest();
+
+        console.log(location.href.split('/'),location.href)
+        ajax.open("post",location.href);// 设置路由
+        ajax.send(formData);// 发送
+
+        ajax.onreadystatechange=function () {
+            if (ajax.readyState===4 && ajax.status===200){
+                //解析返回数据
+                let resData=JSON.parse(ajax.responseText);
+                //显示提示信息
+                if(resData.errData.length===0){
+                    resetOption('alert',"",false,"成功添加"+resData.sucData.length+"人！");
+                }else{
+                    resetOption('alert',"",false,"成功添加"+resData.sucData.length+"人,警员号"+resData.errData+"添加失败！");
+                }
+            }
+        }           
+    }
+
+    let reflashSubmit=document.getElementById("reflash");
+    reflashSubmit.onclick=function(){// 事件监听
+        personSearch();
+    }
+
+
+    // 重置函数
+    function resetOption(id,message="",addOption=true,innerHTML=""){
+        let element=document.getElementById(id);
+        if(id==='alert'&&innerHTML!==""){
+            innerHTML='提示：'+innerHTML;
+        }
+        element.innerHTML=innerHTML;
+        if(addOption){
+            element.innerHTML="<option  value selected>"+message+"</option>";
+        }
+        
+    }
+
+    function resetPlaceholder(id,message){
+         let element=document.getElementById(id);
+         element.value="";
+         element.placeholder=message;
+    }
+
+    function restImage(id){
+        let element=document.getElementById(id);
+        element.src="";
+    }
+
+
+    function sleep(sleepTime) {
+        for(var start = +new Date; +new Date - start <= sleepTime; ) { } 
+    }
+
+
+</script>
+</body>
+</html>

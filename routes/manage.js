@@ -47,6 +47,9 @@ router.get('/personAdd', Manage.showPerAdd);
 // 添加新人
 router.post('/personAdd', Manage.uploadHeaders, Manage.perAdd);
 
+// 删改页面
+router.get('/personEidt', Manage.uploadHeaders, Manage.ShowPerEdit);
+
 //============================================================================
 // 屏幕管理
 router.get('/screenSet', Manage.showScreenSet);
