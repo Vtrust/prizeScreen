@@ -23,11 +23,11 @@
 				<div class="show-show">
 					<div class="slick-for">
 						<%if(years.length&&years.length>15){%>
-							<%for(var i=0;i<parseInt(years.length/15);i++){%>
+							<%for(var i=0;i<=parseInt(years.length/15);i++){%>
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
-										<%if(years[j]){%>
+										<%if(years[j+i*15]){%>
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">

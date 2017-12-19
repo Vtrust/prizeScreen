@@ -7,27 +7,142 @@
 	<link rel="stylesheet" type="text/css" href="/css/show.css">
 </head>
 <body>
-	<div class="show-background">
-		<img src="/image/background.jpg" alt="">
+	<div class="show-background" style="background-color: #393D49">
+		<!-- <img src="/image/background.jpg" alt=""> -->
 		<!-- 		<img src="http://img.article.pchome.net/00/38/30/63/pic_lib/wm/chuangyi017.jpg" alt=""> -->
 	</div>
 	<div id="show-container">
 		<div class="show-main">
-			<div class="show-person-title">
-				<h1><%=people[0].name%></h1>
-			</div>
+			<a href="/show/persons?year=<%=year%>&item=<%= item%>&prize=<%= prize%>">
+				<div class="show-person-title">
+					<h1><%=people[0].name%></h1>
+				</div>
+			</a>
+			
 			<div class="show-content">
 				<div class="show-one-person">
 					<img src="/image/headers/<%=people[0].pic%>" alt="">
 				</div>
 				<div class="show-show">
 					<div class="slick-for">
+						<div>
+							<div  class="show-person-slick">
+								<ul>
+									<li>
+										<span class="part">性别
+											<i class="depart"></i>
+										</span> :
+										<span style="font-family: 楷体">
+											<%=people[0].gender%>
+										</span>
+									</li>
+									<li>
+										<span class="part">警员编号
+											<i class="depart"></i>
+										</span> :
+										<span style="font-family: 楷体">
+											<%=people[0].id%>
+										</span>
+									</li>
+									<li>
+										<span class="part">所属部门
+											<i class="depart"></i>
+										</span> :
+										<span style="font-family: 楷体">
+											<%=people[0].department%>
+										</span>
+									</li>
+									<li>
+										<span class="part">职务
+											<i class="depart"></i>
+										</span> :
+										<span style="font-family: 楷体">
+											<%=people[0].position%>
+										</span>
+									</li>
+									<li>
+										<span class="part">曾获奖
+											<i class="depart"></i>
+										</span> :
+										<span style="font-family: 楷体">
+											请往左侧滑动屏幕
+										</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<%if(people.length&&people.length>15){%>
+						<%for(var i=0;i<=parseInt(people.length/15);i++){%>
+						<div>
+							<div  class="show-slick">
+								<%for(var j=0;j<15;j++){%>
+								<%if(people[j+i*15]){%>
+								<div class="show-item">
+									<div class="show-iitem-line"></div>
+									<div class="show-iitem">										
+										<div class="show-iiitem">
+											<span style="color:white;font-size: 40px;font-family: 楷体">
+												<%=people[j+i*15].year%>年
+												<%=people[j+i*15].item%>
+												<%=people[j+i*15].detail%>
+											</span>
+										</div>
+									</div>
+									<div class="show-iitem-line"></div>
+								</div>
+								<%}else{%>
+								<div class="show-item"></div>
+								<%}%>
+								<%}%>
+							</div>
+						</div>
+						<%}%>
+						<%}else{%>
+						<div>
+							<div  class="show-slick">
+								<%for(var j=0;j<15;j++){%>
+								<%if(people[j]){%>
+								<div class="show-item">
+									<div class="show-iitem-line"></div>
+									<div class="show-iitem">
+										<div class="show-iiitem">
+											<span style="color:white;font-size: 20px;font-family: 楷体">
+												<%=people[j].year%>年
+												<%=people[j].item%>
+												<%=people[j].detail%>
+											</span>
+										</div>
+									</div>
+									<div class="show-iitem-line"></div>
+								</div>
+								<%}else{%>
+								<div class="show-item"></div>
+								<%}%>
+								<%}%>
+							</div>
+						</div>
+						<%}%>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<script src="/libs/layui/layui.all.js"></script>
-	<script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/libs/slick-carousel/slick/slick.min.js"></script>
+	<script type="text/javascript">
+		//轮播图初始化
+		$(document).ready(function(){
+			$(function(){
+				$('.slick-for').slick({
+					autoplay:false,
+					arrows: false,
+					dots: true,
+					// autoplaySpeed:1000,
+					pauseOnHover:false
+				});
+			});	
+		});
+	</script>
 </body>
 </html>

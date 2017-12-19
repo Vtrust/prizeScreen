@@ -59,7 +59,7 @@ exports.showPerson = function (req, res) {
     db.FindPersonPrize(id, function (dat) {
         result = dat;
         console.log(result);
-        res.render('show/old-show-person', {
+        res.render('show/show-person', {
             year: year,
             item: item,
             prize: prize,
@@ -92,7 +92,8 @@ exports.showPersons = function (req, res) {
                         person: data
                     });
                     //屏幕分配算法
-                    let n = global.screenNum; //屏幕个数
+                    if(global.keys.length>0){
+                        let n = global.screenNum; //屏幕个数
                     let screenData = new Array(n); //保存人物信息
                     let numData = [n]; //保存个数信息
                     let screenSet = [n]; //数据屏幕分配标志集
@@ -144,8 +145,12 @@ exports.showPersons = function (req, res) {
                     console.log(numData, "--每个屏幕人员分配");
                     console.log(screenSet, "--屏幕发送序列号");
                     console.log("照片信息数据发送成功！");
+                }else{
+                    console.log("无在线屏幕！");
                 }
-            });
+
+            }
+        });
         } else {
             res.render('show/show-prize', {
                 year: year,

@@ -27,11 +27,11 @@
 				<div class="show-show">
 					<div class="slick-for">
 						<%if(item.length&&item.length>15){%>
-						<%for(var i=0;i<parseInt(item.length/15);i++){%>
+						<%for(var i=0;i<=parseInt(item.length/15);i++){%>
 						<div>
 							<div  class="show-slick">
 								<%for(var j=0;j<15;j++){%>
-								<%if(item[j]){%>
+								<%if(item[j+i*15]){%>
 								<div class="show-item">
 									<div class="show-iitem-line"></div>
 									<div class="show-iitem">

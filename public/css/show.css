@@ -25,6 +25,9 @@ a:active {
 	text-decoration: none;
 	outline:none;
 }
+a:focus {  
+    outline:none;  
+} 
 #show-container{
 	display: flex;
 	align-items: center;
@@ -71,12 +74,14 @@ a:active {
 }
 
 .show-person-title{
-	padding-left: 100px;
 	width: 100%;
 	height: 200px;
 	align-items:center;
 /*	justify-content:center;*/
 	display: flex;
+}
+.show-person-title h1{
+	margin-left: 100px;
 }
 
 .show-person-title h1{
@@ -121,7 +126,7 @@ a:active {
 	height: 500px;
 	margin-left: 10%;
 	object-fit: cover;
-	border-radius: 50px;
+	border-radius: 50%;
 	border: 10px solid #fff;
 }
 .show-show{
@@ -150,6 +155,21 @@ a:active {
 	align-content:space-around;
 }
 
+.show-person-slick{
+	width: 962px;
+	height: 460px;
+	margin: 20px;
+	display: flex;
+	flex-wrap:wrap;
+	align-content:space-around;
+}
+.show-person-slick li {
+      list-style-type: none;
+      font-size: 50px;
+      line-height: 50px;
+      color: white;
+      margin-top: 30px;
+    }
 .show-item{
 	width:200px;
 	height: 150px;
