@@ -15,19 +15,19 @@
     <div class="layui-form-item">
       <label class="layui-form-label">年份</label>
       <div class="layui-input-block">
-        <input class="layui-input" id="pri_year" name="pri_year" type="text" placeholder="year" />
+        <input class="layui-input" id="pri_year" name="year" type="text" placeholder="year" />
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">奖项</label>
       <div class="layui-input-block">
-        <input class="layui-input" id="pri_prize" name="pri_prize" type="text" placeholder="prize" />
+        <input class="layui-input" id="pri_prize" name="desc_a" type="text" placeholder="prize" />
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">奖项等级</label>
       <div class="layui-input-block">
-        <input class="layui-input" id="pri_level" name="pri_level" type="text" placeholder="level" />
+        <input class="layui-input" id="pri_level" name="desc_b" type="text" placeholder="level" />
       </div>
     </div>
     <div class="layui-form-item">
@@ -43,23 +43,29 @@
     <blockquote class="layui-elem-quote">所有奖项</blockquote>
     <table class="layui-table" >
       <colgroup>
+        <col width="250">
+        <col width="300">
+        <col width="300">
         <col width="150">
-        <col width="200">
-        <col>
       </colgroup>
       <thead>
         <tr>
           <th>年份</th>
           <th>奖项</th>
           <th>奖项等级</th>
+          <th>操作</th>
         </tr> 
       </thead>
-      <%for(var i=0;i<prize.length;i++){%>
+      <%for(var i=0;i<prizes.length;i++){%>
       <tbody>
         <tr>
-          <th><%=prize[i].year%></th>
-          <th><%=prize[i].item%></th>
-          <th><%=prize[i].detail%></th>
+          <th><%=prizes[i].year%></th>
+          <th><%=prizes[i].desc_a%></th>
+          <th><%=prizes[i].desc_b%></th>
+          <th>
+            <button class="layui-btn pri_edit" data-pri_id="<%=prizes[i].pri_id%>" data-year="<%=prizes[i].year%>" data-desc_a="<%=prizes[i].desc_a%>" data-desc_b="<%=prizes[i].desc_b%>">编辑</button>
+            <button class="layui-btn layui-btn-danger pri_dele" data-pri_id="<%=prizes[i].pri_id%>">删除</button>
+          </th>
         </tr> 
       </tbody>
       <%}%>
@@ -69,16 +75,39 @@
 
 <script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
 <script src="/libs/layui/layui.all.js"></script>
+<script type="text/javascript" src="/javascripts/manage.js"></script>
 <script type="text/javascript">
   $('#submit').click(function(){// 事件监听
     console.log('click',location);
     let formData=new FormData(document.getElementById("newprize"));
-    console.log('formData1');
     // ajax异步发送表单
     let ajax=new XMLHttpRequest();
 
     ajax.open("post",location.origin+"/manage/addprize");// 设置路由
-    ajax.send(formData);// 发送
+    ajax.send(formData);
+    console.log('执行');
+    ajax.onreadystatechange = function () {
+      console.log('执行1');
+      if (ajax.readyState === 4 && ajax.status === 200) {
+        console.log('执行2');
+          //解析返回数据
+          let resData = JSON.parse(ajax.responseText);
+          console.log(resData);
+          //显示提示信息
+          let mes = ''
+          if (resData.state === 1) {
+            mes = "添加成功！";
+            setTimeout("location.reload()",1000);
+          } else {
+            mes = "添加失败！";
+          }
+          layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.msg(mes);
+          });
+        }
+      }
+
   });
 </script>
 <%-include('footer')%>

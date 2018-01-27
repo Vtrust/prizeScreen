@@ -9,18 +9,15 @@ router.get('/', Show.index);
 router.get('/year', Show.showYears);
 
 //选择描述
-router.get('/item', Show.showItem);
+router.get('/desc_a', Show.showDesc_a);
 
 //选择奖项等级
-router.get('/prize',Show.showPrize);
+router.get('/desc_b',Show.showDesc_b);
 
 //展示获奖人
 router.get('/persons', Show.showPersons);
 
 //选择获奖的一个人
 router.get('/person',Show.showPerson);
-
-//选择获奖的一个人
-// router.get('/back',Show.showBack);
 
 module.exports = router;

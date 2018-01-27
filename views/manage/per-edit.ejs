@@ -1,49 +1,65 @@
 <%-include('header')%>
 <div class="row">
-  <div class="layui-col-md6" style="font-size:20px;font-weight:700">新增奖项</div>
+  <div class="layui-col-md6" style="font-size:20px;font-weight:700">编辑人员</div>
   <div class="layui-col-md6">
     <span class="layui-breadcrumb" style="float:right">
       <a href="">人员管理</a>
       <a>
-        <cite>增删人员</cite>
+        <cite>编辑人员</cite>
       </a>
     </span>
   </div>
 <div class="layui-col-md10">
   <div style="margin:20px">
+    <blockquote class="layui-elem-quote">查找编辑</blockquote>
+    <div class="layui-row ">
+      <form class="layui-form layui-col-md4" action="">
+        <div class="layui-form-item">
+          <div class="layui-input-inline">
+            <input type="text" name="search_data" required placeholder="请输入人员编号或姓名" class="layui-input search_per_val">
+          </div>
+          <div class="layui-input-inline">
+            <button type="button" class="layui-btn search_per_bu">查找</button>
+          </div>
+        </div>
+      </form>      
+    </div>
+    <div class="search_per_data"></div>
     <blockquote class="layui-elem-quote">所有人员</blockquote>
-    <table class="layui-table" >
+    <table class="layui-table">
       <colgroup>
-        <col width="100">
-        <col width="100">
+        <col width="150">
+        <col width="150">
+        <col width="150">
+        <col width="150">
+        <col width="150">
         <col >
-        <col width="100">
-        <col width="100">
-        <col width="100">
         <col width="200">
       </colgroup>
       <thead>
         <tr>
-          <th>id</th>
+          <th>编号(不可更改)</th>
           <th>姓名</th>
-          <th>照片</th>
           <th>性别</th>
           <th>部门</th>
           <th>职位</th>
+          <th>照片(点击可预览)</th>
           <th>操作</th>
         </tr> 
       </thead>
-
         <%for(var i=0;i<persons.length;i++){%>
           <tbody>
             <tr>
-              <th><%=persons[i].gender%></th>
+              <th><%=persons[i].per_id%></th>
               <th><%=persons[i].name%></th>
-              <th>照片</th>
               <th><%=persons[i].gender%></th>
-              <th><%=persons[i].gender%></th>
-              <th><%=persons[i].gender%></th>
-              <th><button class="layui-btn">编辑</button><button class="layui-btn layui-btn-danger">删除</button></th>
+              <th><%=persons[i].department%></th>
+              <th><%=persons[i].job%></th>
+              <th class="per_photo" data-photo="<%=persons[i].photo%>"><%=persons[i].photo%></th>
+              <th>
+                <button class="layui-btn per_edit" data-per_id="<%=persons[i].per_id%>">编辑</button>
+                <button class="layui-btn layui-btn-danger per_dele" data-per_id="<%=persons[i].per_id%>">删除</button>
+              </th>
             </tr> 
           </tbody>
         <%}%>
@@ -53,27 +69,5 @@
 
 <script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
 <script src="/libs/layui/layui.all.js"></script>
-<script type="text/javascript">
-    $('#submit1').click(function(){// 事件监听
-      let formData=new FormData(document.getElementById("newdepartment"));
-      console.log('formData2');
-      // ajax异步发送表单
-      let ajax=new XMLHttpRequest();
-
-      ajax.open("post",location.origin+"/manage/adddeparment");// 设置路由
-      ajax.send(formData);// 发送
-
-    });
-    $('#submit2').click(function(){// 事件监听
-      let formData=new FormData(document.getElementById("newposition"));
-      console.log('formData2');
-      // ajax异步发送表单
-      let ajax=new XMLHttpRequest();
-
-      ajax.open("post",location.origin+"/manage/addposition");// 设置路由
-      ajax.send(formData);// 发送
-
-    });
-
-</script>
+<script type="text/javascript" src="/javascripts/manage.js"></script>
 <%-include('footer')%>

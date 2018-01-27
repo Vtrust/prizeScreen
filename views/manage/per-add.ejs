@@ -16,19 +16,19 @@
         <div class="layui-form-item">
           <label class="layui-form-label">警员编号</label>
           <div class="layui-input-block">
-            <input class="layui-input" id="per_id" name="per_id" type="text" placeholder="请输入警号" />
+            <input class="layui-input" id="per_id" name="per_id" type="text" placeholder="编号不可更改，请细心填写" />
           </div>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label">姓名</label>
           <div class="layui-input-block">
-            <input class="layui-input" id="per_name" name="per_name" type="text" placeholder="请输入姓名" />
+            <input class="layui-input" id="name" name="per_name" type="text" placeholder="请输入姓名" />
           </div>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label">性别</label>
           <div class="layui-input-block">
-            <select id="per_gender" name="per_gender">
+            <select id="gender" name="gender">
               <option value="" selected="selected">未选择</option>
               <option value="男">男</option>
               <option value="女">女</option>
@@ -39,26 +39,26 @@
         <div class="layui-form-item">
           <label class="layui-form-label">部门</label>
           <div class="layui-input-block">
-            <select id="per_department" name="per_department">
+            <select id="department" name="department">
               <option selected value="">未选择</option>
+              <%if(jobs.length&&jobs.length>0){%>
               <%departments.forEach(function(department){%>
-                <option value="<%=department.post%>">
-                  <%=department.post%>
-                </option>
+                <option value="<%=department.dept_id%>"><%=department.name%></option>
                 <%})%>
+              <%}%>
             </select>
           </div>
         </div>
         <div class="layui-form-item">
           <label class="layui-form-label">职务</label>
           <div class="layui-input-block">
-            <select id="per_position" name="per_position">
+            <select id="job" name="job">
               <option selected value="">未选择</option>
-              <%positions.forEach(function(position){%>
-                <option value="<%=position.job%>">
-                  <%=position.job%>
-                </option>
+              <%if(jobs.length&&jobs.length>0){%>
+              <%jobs.forEach(function(job){%>
+                <option value="<%=job.job_id%>"><%=job.name%></option>
                 <%})%>
+              <%}%>
             </select>
           </div>
         </div>
@@ -82,6 +82,7 @@
     </div>
     <script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../javascripts/exif.js"></script>
+    <script src="/libs/layui/layui.all.js"></script>
     <script>
       function F_Open_dialog() {
         document.getElementById("photo").click();
@@ -120,10 +121,10 @@
       inputSubmit.onclick = function () { // 事件监听
         let formData = new FormData(); //(document.getElementById("newPerson"));
         let per_id = $('#per_id').val();
-        let per_name = $('#per_name').val();
-        let per_gender = $('#per_gender').val();
-        let per_department = $('#per_department').val();
-        let per_position = $('#per_position').val();
+        let per_name = $('#name').val();
+        let per_gender = $('#gender').val();
+        let per_department = $('#department').val();
+        let per_job = $('#job').val();
         let per_photo = inputPhoto.value;
         console.log(per_id, per_name, per_gender, per_photo);
 
@@ -142,7 +143,7 @@
           if (!per_department) {
             throw new Error('缺少部门！');
           }
-          if (!per_position) {
+          if (!per_job) {
             throw new Error('缺少职位！');
           }
           if (!per_photo) {
@@ -159,10 +160,10 @@
 
         //写入数据
         formData.append('per_id', per_id);
-        formData.append('per_name', per_name);
-        formData.append('per_gender', per_gender);
-        formData.append('per_department', per_department);
-        formData.append('per_position', per_position);
+        formData.append('name', per_name);
+        formData.append('gender', per_gender);
+        formData.append('department', per_department);
+        formData.append('job', per_job);
         formData.append('baseImg', baseImg);
         // ajax异步发送表单
         let ajax = new XMLHttpRequest();
@@ -172,13 +173,20 @@
 
         ajax.onreadystatechange = function () {
           if (ajax.readyState === 4 && ajax.status === 200) {
+            //解析返回数据
+            let resData = JSON.parse(ajax.responseText);
+            console.log(resData);
             //显示提示信息
-            // console.log(ajax.responseText);
-            // let submitFeedBack=JSON.parse(ajax.responseText);
-            $('#alert').html("提示：" + ajax.responseText);
+            let mes = ''
+            if (resData.state === 1) {
+                mes = "新增成功！";
+                 setTimeout("location.reload()",1000);
+            } else {
+                mes = "新增失败！";
+            }
             layui.use('layer', function () {
-              var layer = layui.layer;
-              layer.msg(ajax.responseText);
+                var layer = layui.layer;
+                layer.msg(mes);
             });
           }
         }
@@ -247,6 +255,4 @@
         image.src = img;
       }
     </script>
-    <script src="/libs/layui/layui.all.js"></script>
-
     <%-include('footer')%>

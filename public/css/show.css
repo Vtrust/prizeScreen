@@ -105,7 +105,7 @@ a:focus {
 	background-color: rgba(255,255,255,0.2);
 }
 .show-logo{
-	width: 560px;
+	width: 500px;
 	height: 540px;
 	/*	border: 1px solid black;*/
 	box-sizing: border-box;
@@ -133,7 +133,7 @@ a:focus {
 	width: 1102px;
 	height: 540px;
 	padding: 20px 50px;
-	margin-left: 20px;
+	margin-left: 80px;
 	/*	border: 1px solid black;*/
 	box-sizing: border-box;
 }
@@ -155,12 +155,36 @@ a:focus {
 	align-content:space-around;
 }
 
+.slick-prev:before, .slick-next:before{
+	font-size: 80px;
+}
+
+.slick-prev{
+	left: -80px;
+}
+.slick-next{
+	right: -20px;
+}
+.slick-prev, .slick-next{
+	height: 80px;
+	widows: 80px;
+}
+
+.slick-dots li.slick-active button:before{
+	color: #fff;
+}
+
+.slick-dots li button:before{
+	color: #fff;
+}
+
 .show-person-slick{
-	width: 962px;
+	width: 1100px;
 	height: 460px;
 	margin: 20px;
 	display: flex;
 	flex-wrap:wrap;
+	overflow-y: scroll; 
 	align-content:space-around;
 }
 .show-person-slick li {
@@ -194,6 +218,7 @@ a:focus {
 	box-sizing: border-box;
 }
 
+
 .show-iiitem{
 	display: flex;
 	justify-content:center;
@@ -208,4 +233,23 @@ a:focus {
 	box-sizing: border-box;
 	-webkit-transform: rotate(45deg);
 	text-align: center;
+}
+
+.show-persons{
+	font-size: 30px;
+}
+
+.show-desc_a{
+	font-size: 30px;
+}
+
+.show-desc_b{
+	font-size: 30px;
+}
+
+.show-per-name{
+	font-size: 30px;
+}
+.show-year {
+	font-size: 35px;
 }

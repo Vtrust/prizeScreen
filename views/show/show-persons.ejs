@@ -13,7 +13,7 @@
 	</div>
 	<div id="show-container">
 		<div class="show-main">
-			<a href="/show/prize?year=<%=year%>&item=<%= item%>">
+			<a href="/show/desc_b?year=<%=year%>&desc_a=<%= desc_a%>">
 				<div class="show-title">
 					<h1>网安支队历年立功授奖情况</h1>
 				</div>
@@ -26,18 +26,18 @@
 				</a>
 				<div class="show-show">
 					<div class="slick-for">
-						<%if(person.length&&person.length>15){%>
-							<%for(var i=0;i<=parseInt(person.length/15);i++){%>
+						<%if(persons.length&&persons.length>15){%>
+							<%for(var i=0;i<=parseInt(persons.length/15)&&!(parseInt(persons.length)%15==0&&i==parseInt(persons.length/15));i++){%>
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
-										<%if(person[j+i*15]){%>
-										<div class="show-item">
+										<%if(persons[j+i*15]){%>
+										<div class="show-item show-persons">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/person?id=<%=person[j+i*15].id%>&item=<%=item%>&year=<%=year%>&prize=<%=detail%>'>
+												<a href='/show/person?per_id=<%=persons[j+i*15].per_id%>&year=<%=year%>&desc_a=<%=desc_a%>&desc_b=<%=desc_b%>'>
 													<div class="show-iiitem">
-														<p><%=person[j+i*15].name%></p>
+														<p class="show-per-name"><%=persons[j+i*15].name%></p>
 													</div>
 												</a>
 											</div>
@@ -54,13 +54,13 @@
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
-										<%if(person[j]){%>
+										<%if(persons[j]){%>
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/person?id=<%=person[j].id%>&item=<%=item%>&year=<%=year%>&prize=<%=detail%>'>
+												<a href='/show/person?per_id=<%=persons[j].per_id%>&year=<%=year%>&desc_a=<%=desc_a%>&desc_b=<%=desc_b%>'>
 												<div class="show-iiitem">
-													<p><%=person[j].name%></p>
+													<p class="show-per-name"><%=persons[j].name%></p>
 												</div>
 												</a>
 											</div>
@@ -81,19 +81,6 @@
 	<script src="/libs/layui/layui.all.js"></script>
 	<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/libs/slick-carousel/slick/slick.min.js"></script>
-	<script type="text/javascript">
-		//轮播图初始化
-		$(document).ready(function(){
-			$(function(){
-				$('.slick-for').slick({
-					autoplay:false,
-					arrows: false,
-					dots: true,
-					// autoplaySpeed:1000,
-					pauseOnHover:false
-				});
-			});	
-		});
-	</script>
+	<script type="text/javascript" src="/javascripts/slickset.js"></script>
 </body>
 </html>

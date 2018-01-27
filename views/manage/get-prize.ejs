@@ -14,6 +14,7 @@
     padding: 10px;
     animation-duration: 0.1s;
     -webkit-animation-duration: 0.1s;
+    position: relative;
   }
   .onePersonDet{
     margin: 10px;
@@ -41,16 +42,23 @@
     border: 5px solid rgba(255, 255, 255, 0.3);
     box-sizing: border-box;
   }
+
+  .per-pri-del{
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    display: none;
+  }
 </style>
 <div class="row">
     <div class="layui-col-md6" style="font-size:20px;font-weight:700">
-        新增得奖
+        得奖编辑
     </div>
     <div class="layui-col-md6">
         <span class="layui-breadcrumb" style="float:right">
             <a href="">奖项管理</a>
             <a>
-                <cite>新增得奖</cite>
+                <cite>得奖编辑</cite>
             </a>
         </span>
     </div>
@@ -66,9 +74,7 @@
                         <select id="pri_year" name="pri_year" lay-filter="year">
                             <option value="" selected="selected">未选择</option>
                             <%years.forEach(function(year){%>
-                                <option value="<%=year.year%>">
-                                    <%=year.year%>
-                                </option>
+                                <option value="<%=year.year%>"><%=year.year%></option>
                                 <%})%>
                         </select>
                     </div>
@@ -77,48 +83,51 @@
                     <label class="layui-form-label">奖项</label>
                     <div class="layui-input-block">
                         <select id="pri_item" name="pri_item" lay-filter="prize">
-                            <option selected value="">请先选择年份</option>
+                            <option selected value="">未选择</option>
                         </select>
                     </div>
                 </div>
-                <blockquote class="layui-elem-quote">部门信息</blockquote>
                 <div class="layui-form-item">
                     <label class="layui-form-label">部门</label>
                     <div class="layui-input-block">
                         <select id="pri_department" name="pri_department" lay-filter="department">
                             <option selected value="">未选择</option>
                             <%departments.forEach(function(department){%>
-                                <option value="<%=department.department%>">
-                                    <%=department.department%>
-                                </option>
+                                <option value="<%=department.dept_id%>"><%=department.name%></option>
                                 <%})%>
                         </select>
                     </div>
                 </div>
+                <blockquote class="layui-elem-quote">搜索加人</blockquote>
                 <div class="layui-form-item">
                     <label class="layui-form-label">搜索</label>
                     <div class="layui-input-inline">
                         <input class="layui-input" id="searchDepartment" name="searchDepartment" type="text" placeholder="输入姓名或警员号" />
                     </div>
                     <div class="layui-input-inline">
-                        <button class="layui-btn layui-btn-primary" id="personSearch" type="button">该部门下搜索</button>
+                        <button class="layui-btn layui-btn-primary" id="personSearch" type="button">搜人</button>
                     </div>
                 </div>
 
                 <blockquote class="layui-elem-quote">搜索结果</blockquote>
                 <div id="searchDepartmentRes"></div>
 
-                <blockquote class="layui-elem-quote">曾经获奖</blockquote>
+                <blockquote class="layui-elem-quote">已经获奖(点击删除,再点击取消删除)</blockquote>
+                <div class="getPrizeData">
+                    <div id="NowGetPrize" class="clear"></div>
+                </div>                
+
+                <blockquote class="layui-elem-quote">曾经获奖(点击选择)</blockquote>
                 <div class="getPrizeData">
                     <div id="GetPrize"></div>
                 </div>
 
-                <blockquote class="layui-elem-quote">曾未获奖</blockquote>
+                <blockquote class="layui-elem-quote">曾未获奖(点击选择)</blockquote>
                 <div class="getPrizeData">
                     <div id="unGetPrize"></div>
                 </div>
 
-                <blockquote class="layui-elem-quote">已选的人</blockquote>
+                <blockquote class="layui-elem-quote">已选的人(点击取消选择)</blockquote>
                 <div id="choosePerson">
                     <div id="choosePersonEnd" class="clear"></div>
                 </div>
@@ -133,39 +142,30 @@
 </div>
 <script src="/libs/layui/layui.all.js"></script>
 <script>
-    //console.log(location.href.split('/'), location)
-
-    // 添加奖项代码
-    let message1 = "请先选择年份";
-    let message2 = "-请先选择奖项-";
-    let message3 = "-请选择或输入姓名-";
-    let message4 = "-未选择-";
-
+    // 搜索数据
     let searchData = {
         year: "",
-        prize: "",
-        department: ""
+        pri_id: "",
+        dept_id: ""
     }; //标识年份，奖项，部门是否选择
 
     layui.use('form', function () {
         var form = layui.form;
         //ajax监听年份选择
         form.on('select(year)', function (data) {
-            console.log(data.elem); //得到select原始DOM对象
-            console.log(data.value); //得到被选中的值
-            console.log(data.othis); //得到美化后的DOM对象
-
             let year = data.value;
 
             //复位
-            resetOption("pri_item", message1);
+            resetOption("pri_item", "未选择");
             resetOption("unGetPrize", "", false);
             resetOption("GetPrize", "", false);
+            resetOption("NowGetPrize", "", false);
+            resetOption("searchDepartmentRes","",false);
             resetOption("choosePerson", "", false, "<div id=\"choosePersonEnd\" class=\"clear\"></div>");
 
             if (year !== "") {
                 searchData.year = year;
-
+                console.log(year);
                 // ajax异步查询奖项
                 let ajax = new XMLHttpRequest();
 
@@ -181,8 +181,8 @@
                             select.innerHTML = "<option value selected>未选择</option>";
                             prizes.forEach(function (prize) {
                                 let option = document.createElement("option");
-                                option.value = prize.item + " " + prize.detail;
-                                option.innerHTML = prize.item + " " + prize.detail;
+                                option.value = prize.pri_id;
+                                option.innerHTML = prize.desc_a + " " + prize.desc_b;
                                 select.appendChild(option);
                             })
                         }
@@ -198,66 +198,75 @@
 
         //监听奖项选择
         form.on('select(prize)', function (data) {
+            //复位
+            resetOption("NowGetPrize", "", false);
             resetOption("unGetPrize", "", false);
             resetOption("GetPrize", "", false);
-            let prize = data.value;
-            console.log(prize);
-            if (prize !== "" && searchData.year !== "") {
-                searchData.prize = prize;
+            resetOption("searchDepartmentRes","",false);
+            
+            let pri_id = data.value;
+            console.log(pri_id);
+            if (pri_id !== "" && searchData.year !== "") {
+                searchData.pri_id = pri_id;
                 personSearch();
             } else {
-                //复位
                 searchData.prize = "";
             }
         })
+
         //监听部门选择
         form.on('select(department)', function (data) {
-            resetOption("searchDepartmentRes", "", false);
-            let department = data.value;
-            console.log(department);
-            if (department !== "") {
-                searchData.department = department;
-                personSearch();
+            //复位
+            resetOption("unGetPrize", "", false);
+            resetOption("GetPrize", "", false);
+            resetOption("NowGetPrize", "", false);
+            resetOption("choosePerson", "", false, "<div id=\"choosePersonEnd\" class=\"clear\"></div>");
+
+            let dept_id = data.value;
+            console.log(dept_id);
+            if (dept_id !== "") {
+                searchData.dept_id = dept_id;
             } else {
-                searchData.department = "";
-            }
+                searchData.dept_id = "";
+            }            
+
+            personSearch();
         });
     });
 
     //监听搜索框回车
     let inputSearchDepartment = document.getElementById("searchDepartment");
-    inputSearchDepartment.onkeydown =
-        function (event) { // 事件监听
-            if (event.keyCode === 13) {
-                departmentPersonSearch();
-            }
-
+    inputSearchDepartment.onkeydown = function (event) { // 事件监听
+        if (event.keyCode === 13) {
+            buttPersonSearch();
         }
+
+    }
+
     //监听搜索按钮
     let buttomPersonSearch = document.getElementById("personSearch");
     buttomPersonSearch.onclick = function () {
-        console.log("buttomPersonSearch");
-        departmentPersonSearch();
+        buttPersonSearch();
     }
 
     //部门下查找
-    function departmentPersonSearch() {
-        if (searchData.department !== "") {
+    function buttPersonSearch() {
+        if(searchData.year&&searchData.pri_id){
             resetOption("searchDepartmentRes", "", false);
+
             let search = inputSearchDepartment.value;
+
             // ajax异步查询
             let ajax = new XMLHttpRequest();
-
-            ajax.open("get", location.href + "/search?data=" + search + "&department=" + searchData.department, true); // 设置路由
+            ajax.open("get", "/manage/searchPer?data="+search, true); // 设置路由
             ajax.send(); // 发送
-
             ajax.onreadystatechange = function () {
                 if (ajax.readyState === 4 && ajax.status === 200) {
                     let resData = JSON.parse(ajax.responseText);
-                    if (resData.err !== '1') {
+                    if (resData.length) {
                         let searchDepartmentRes = document.getElementById("searchDepartmentRes");
                         let positionFlag = 0;
-                        if (!resData.length || resData.length === 0) {
+                        if (resData.length === 0) {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
                                 layer.msg('无结果！');
@@ -275,13 +284,13 @@
                             clearDiv1.setAttribute('class', 'clear');
                             div.setAttribute('class', 'onePerson  layui-col-md2 layui-col-space10');
                             div.setAttribute('prizeFlag', 2);
-                            div.setAttribute('personID', person.id);
+                            div.setAttribute('personID', person.per_id);
                             var innerData =
                                 "<div class=\"layui-row\" style=\"background:#F2F2F2\"><div class=\"guide-square\"><img class=\"onePersonImg\" src=\"" +
-                                location.origin + "/image/headers/" + person.pic +
+                                location.origin + "/image/headers/" + person.photo +
                                 "\"/></div>\
                                     <div class=\"onePersonDet\"><p class=\"onePersonID\"><strong>警员号&nbsp&nbsp</strong>" +
-                                person.id +
+                                person.per_id +
                                 "</p>\
                                     <p class=\"onePersonName\"><strong>姓名&nbsp&nbsp</strong>" +
                                 person.name +
@@ -297,74 +306,178 @@
                     }
                 }
             }
+        }else{
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.msg('请先选择年份和奖项');
+            });
         }
     }
 
     //查找该部门曾经获奖的人和不曾获奖的人
     function personSearch() {
+        resetOption("NowGetPrize", "", false);
         resetOption("choosePerson", "", false, "<div id=\"choosePersonEnd\" class=\"clear\"></div>");
-        if (searchData.year !== "" && searchData.prize !== "" && searchData.department !== "") {
+        if (searchData.year !== "" && searchData.pri_id !== "" ) {
+            //初始化得奖和未曾得奖
             let GetPrize = document.getElementById("GetPrize")
             let unGetPrize = document.getElementById("unGetPrize");
+            let NowGetPrize = document.getElementById("NowGetPrize");
             GetPrize.innerHTML = "";
             unGetPrize.innerHTML = "";
 
             // ajax异步查询
             let ajax = new XMLHttpRequest();
-
-            ajax.open("get", location.origin + "/manage/getPerizeAdd/person?year=" + searchData.year + "&prize=" +
-                searchData.prize +
-                "&department=" + searchData.department, true); // 设置路由
+            ajax.open("get", location.origin + "/manage/getPerizeAdd/persons?year=" + searchData.year + "&pri_id=" +
+                searchData.pri_id +
+                "&dept_id=" + searchData.dept_id, true); // 设置路由
             ajax.send(); // 发送
 
             ajax.onreadystatechange = function () {
                 if (ajax.readyState === 4 && ajax.status === 200) { // 
                     let persons = JSON.parse(ajax.responseText);
-                    if (persons.err !== 1) {
+                    console.log('personSearchpersonSearchpersonSearchpersonSearch',persons);
+                    if (persons.length&&persons.length>0) {
                         let positionFlag = 0;
                         let unPositionFlag = 0;
+                        console.log('ok1')
 
                         persons.forEach(function (person, index) {
+                            console.log('ok2')
                             //创造元素
                             let div = document.createElement("div");
                             let clearDiv1 = document.createElement("div");
                             let clearDiv2 = document.createElement("div");
+                            let clearDiv3 = document.createElement("div");
                             //属性赋值
                             div.onclick = function (event) {
                                 selectPerson(event, this)
                             };
                             clearDiv1.setAttribute('class', 'clear');
                             clearDiv2.setAttribute('class', 'clear');
+                            clearDiv3.setAttribute('class', 'clear');
                             div.setAttribute('class', 'onePerson layui-col-md2 layui-col-space10');
-                            div.setAttribute('prizeFlag', person.prize);
-                            div.setAttribute('personID', person.id);
+                            div.setAttribute('prizeFlag', person.flag);
+                            div.setAttribute('personID', person.per_id);
                             var innerData =
-                                "<div class=\"layui-row\" style=\"background:#F2F2F2\"><div class=\"guide-square\"><img class=\"onePersonImg\" src=\"" +
-                                location.origin + "/image/headers/" + person.pic +
+                                "<span class=\"layui-badge-dot per-pri-del\"></span><div class=\"layui-row\" style=\"background:#F2F2F2\"><div class=\"guide-square\"><img class=\"onePersonImg\" src=\"" +
+                                location.origin + "/image/headers/" + person.photo +
                                 "\"/></div>\
                                     <div class=\"onePersonDet\"><p class=\"onePersonID\"><strong>警员号&nbsp&nbsp</strong>" +
-                                person.id +
+                                person.per_id +
                                 "</p>\
                                     <p class=\"onePersonName\"><strong>姓名&nbsp&nbsp</strong>" +
                                 person.name +
                                 "</p></div></div>"
                             div.innerHTML = innerData;
-                            if (person.prize === '1') {
+                            if (person.flag === 1) {
                                 div.setAttribute('positionFlag', positionFlag);
                                 GetPrize.appendChild(div);
                                 positionFlag++;
-                            } else if (person.prize === '0') {
+                            } else if (person.flag === 0) {
                                 div.setAttribute('positionFlag', unPositionFlag);
                                 unGetPrize.appendChild(div);
                                 unPositionFlag++;
+                            } else if (person.flag === 3){ 
+                                div.setAttribute('class', 'onePerson layui-col-md2 layui-col-space10 getPriPer');
+                                div.onclick = function(event){
+                                    console.log('点击删除')
+                                    delePerPri(event,this);
+                                }
+                                NowGetPrize.appendChild(div);
                             }
                             if (persons.length === index + 1) {
                                 GetPrize.appendChild(clearDiv1);
                                 unGetPrize.appendChild(clearDiv2);
+                                NowGetPrize.appendChild(clearDiv3);
                             }
                         })
                     }
                 }
+            }
+        }
+    }
+
+    //删除得奖项事件
+    function delePerPri(event, thisE){
+        let delPri = function(per_id,pri_id){
+            let formData = new FormData();
+            formData.append('per_id', per_id);
+            formData.append('pri_id', pri_id);
+            // ajax异步发送表单
+            let ajax = new XMLHttpRequest();
+
+            ajax.open("post", location.origin+"/manage/delePerPri"); // 设置路由
+            ajax.send(formData); // 发送
+
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4 && ajax.status === 200) {
+                    //解析返回数据
+                    let resData = JSON.parse(ajax.responseText);
+                    console.log(resData);
+                    //显示提示信息
+                    let mes = ''
+                    if (resData.state === 1) {
+                        mes = "删除成功！";
+                        //显示圆点
+                       thisE.getElementsByClassName("per-pri-del")[0].style.display="block";
+                    } else {
+                        mes = "删除失败！";
+                    }
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg(mes);
+                    });
+                }
+            } 
+        }
+
+        let addPri = function(per_id,pri_id){
+            let formData = new FormData();
+            formData.append('per_id', per_id);
+            formData.append('pri_id', pri_id);
+            // ajax异步发送表单
+            let ajax = new XMLHttpRequest();
+
+            ajax.open("post", location.origin+"/manage/addPerPri"); // 设置路由
+            ajax.send(formData); // 发送
+
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState === 4 && ajax.status === 200) {
+                    //解析返回数据
+                    let resData = JSON.parse(ajax.responseText);
+                    console.log(resData);
+                    //显示提示信息
+                    let mes = ''
+                    if (resData.state === 1) {
+                        mes = "添加成功！";
+                        //隐藏圆点
+                        thisE.getElementsByClassName("per-pri-del")[0].style.display="none";
+                    } else {
+                        mes = "添加失败！";
+                    }
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg(mes);
+                    });
+                }
+            } 
+        }
+
+        event.stopPropagation(); //停止事件冒泡
+        let per_id=thisE.getAttribute('personID');
+
+        if(!thisE.getAttribute('delete')){//第一次删除设置标志位
+            thisE.setAttribute('delete',1);
+            //删除
+            delPri(per_id,searchData.pri_id);           
+        }else{
+            if(thisE.getAttribute('delete')==='1'){
+                 thisE.setAttribute('delete',0);
+                 addPri(per_id,searchData.pri_id);
+            }else{
+                thisE.setAttribute('delete',1);
+                delPri(per_id,searchData.pri_id);
             }
         }
     }
@@ -460,10 +573,10 @@
             if (searchData.year === "") {
                 throw new Error("请选择年份！");
             };
-            if (searchData.prize === "") {
+            if (searchData.pri_id === "") {
                 throw new Error("请选择奖项！");
             };
-            if (searchData.department === "") {
+            if (searchData.dept_id === "") {
                 throw new Error("请选择部门！");
             };
             if (choosePerson.length <= 0) {
@@ -474,11 +587,10 @@
         }
         let formData = new FormData();
         formData.append('choosePerson', choosePerson);
-        formData.append('prize', searchData.year + " " + searchData.prize);
+        formData.append('pri_id', searchData.pri_id);
         // ajax异步发送表单
         let ajax = new XMLHttpRequest();
 
-        console.log(location.href.split('/'), location.href)
         ajax.open("post", location.href); // 设置路由
         ajax.send(formData); // 发送
 
@@ -518,17 +630,6 @@
             element.innerHTML = "<option  value selected>" + message + "</option>";
         }
 
-    }
-
-    function resetPlaceholder(id, message) {
-        let element = document.getElementById(id);
-        element.value = "";
-        element.placeholder = message;
-    }
-
-    function restImage(id) {
-        let element = document.getElementById(id);
-        element.src = "";
     }
 </script>
 <%-include('footer')%>

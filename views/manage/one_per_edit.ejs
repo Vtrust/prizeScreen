@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/libs/layui/css/layui.css">
+    <link rel="stylesheet" href="/css/manage.css">
+</head>
+
+<body>
+<div style="margin: 20px;">
+    <div class="layui-col-md10">
+      <form class="layui-form" id="newPerson" style="margin:20px 0" method="post" enctype="multipart/form-data">
+        <div class="layui-form-item" style="display: none;">
+          <label class="layui-form-label">警员编号</label>
+          <div class="layui-input-block">
+            <input class="layui-input" id="per_id" name="per_id" type="text" placeholder="请输入警号" value="<%=person.per_id%>" />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">姓名</label>
+          <div class="layui-input-block">
+            <input class="layui-input" id="name" name="per_name" type="text" placeholder="请输入姓名" value="<%=person.name%>" />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">性别</label>
+          <div class="layui-input-block">
+            <select id="gender" name="gender">
+              <option value="">未选择</option>
+              <option value="男" <%if(person.gender==='男'){%>selected<%}%> >男</option>
+              <option value="女" <%if(person.gender==='女'){%>selected<%}%> >女</option>
+              <option value="保密"  <%if(person.gender==='保密'){%>selected<%}%> >保密</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">部门</label>
+          <div class="layui-input-block">
+            <select id="department" name="department">
+              <option value="">未选择</option>
+              <%departments.forEach(function(department){%>
+                <option value="<%=department.dept_id%>"  <%if(person.dept_id===department.dept_id){%>selected="selected"<%}%> ><%=department.name%></option>
+                <%})%>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">职务</label>
+          <div class="layui-input-block">
+            <select id="job" name="job">
+              <option selected value="">未选择</option>
+              <%jobs.forEach(function(job){%>
+                <option value="<%=job.job_id%>" <%if(person.job_id===job.job_id){%>selected<%}%> ><%=job.name%></option>
+                <%})%>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <input type="file" name="photo" id="photo" style="display:none">
+            <button type="button" class="layui-btn layui-btn-primary" onclick="F_Open_dialog()">选择照片</button>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <img src="/image/headers/<%=person.photo%>" id="deal" width="200px">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <input class="layui-btn" id="submit" type="button" value="提交">
+          </div>
+        </div>
+      </form>
+    </div>
+    <script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../javascripts/exif.js"></script>
+    <script src="/libs/layui/layui.all.js"></script>
+    <script>
+      function F_Open_dialog() {
+        document.getElementById("photo").click();
+      }
+      let baseImg = '';
+      let maxSize = 500 * 1024; //最大图片质量200kb
+      //图片选择事件
+      let inputPhoto = document.getElementById("photo");
+
+      inputPhoto.onchange = function () {
+        let file = this.files[0];
+        console.log('原文件大小', file.size);
+        minSize(file);
+      }
+      //压缩函数
+      function minSize(file) {
+        //此方法为file input元素的change事件
+        //var file = this.files[0];
+        var orientation;
+        //EXIF js 可以读取图片的元信息 https://github.com/exif-js/exif-js
+        EXIF.getData(file, function () {
+          orientation = EXIF.getTag(this, 'Orientation');
+        });
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          getImgData(this.result, orientation, function (data) {
+            //这里可以使用校正后的图片data了
+            deal.src = data;
+            baseImg = data;
+          });
+        }
+        reader.readAsDataURL(file);
+      }
+      // ajax异步提交表单
+      let inputSubmit = document.getElementById("submit");
+      inputSubmit.onclick = function () { // 事件监听
+        let formData = new FormData(); //(document.getElementById("newPerson"));
+        let per_id = $('#per_id').val();
+        let per_name = $('#name').val();
+        let per_gender = $('#gender').val();
+        let per_department = $('#department').val();
+        let per_job = $('#job').val();
+        let per_photo = inputPhoto.value;
+        console.log(per_id, per_name, per_gender, per_photo);
+
+
+        //数据检测
+        try {
+          if (!per_id) {
+            throw new Error('缺少编号！');
+          }
+          if (!per_name) {
+            throw new Error('缺少姓名！');
+          }
+          if (!per_gender) {
+            throw new Error('缺少性别！');
+          }
+          if (!per_department) {
+            throw new Error('缺少部门！');
+          }
+          if (!per_job) {
+            throw new Error('缺少职位！');
+          }
+        } catch (err) {
+          console.log(err.message);
+          layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.msg(err.message);
+          });
+          return;
+        }
+
+        //写入数据
+        formData.append('per_id', per_id);
+        formData.append('name', per_name);
+        formData.append('gender', per_gender);
+        formData.append('department', per_department);
+        formData.append('job', per_job);
+        if (per_photo) {
+           formData.append('baseImg', baseImg);
+        }
+        
+        // ajax异步发送表单
+        let ajax = new XMLHttpRequest();
+
+        ajax.open("post", location.href); // 设置路由
+        ajax.send(formData); // 发送
+
+        ajax.onreadystatechange = function () {
+          if (ajax.readyState === 4 && ajax.status === 200) {
+            //解析返回数据
+            let resData = JSON.parse(ajax.responseText);
+            console.log(resData);
+            //显示提示信息
+            let mes = ''
+            if (resData.state === 1) {
+                mes = "更改成功！";
+                 setTimeout(function(){
+                  var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                  parent.layer.close(index); //再执行关闭   
+                 },1000);
+            } else {
+                mes = "更改失败！";
+            }
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.msg(mes);
+            });
+          }
+        }
+      }
+
+
+      // @param {string} img 图片的base64
+      // @param {int} dir exif获取的方向信息
+      // @param {function} next 回调方法，返回校正方向后的base64
+      function getImgData(img, dir, next) {
+        var image = new Image();
+        image.onload = function () {
+          var degree = 0,
+            drawWidth, drawHeight, width, height;
+          drawWidth = this.naturalWidth;
+          drawHeight = this.naturalHeight;
+          //以下改变一下图片大小
+          var maxSide = Math.max(drawWidth, drawHeight);
+          if (maxSide > 1024) {
+            var minSide = Math.min(drawWidth, drawHeight);
+            minSide = minSide / maxSide * 1024;
+            maxSide = 1024;
+            if (drawWidth > drawHeight) {
+              drawWidth = maxSide;
+              drawHeight = minSide;
+            } else {
+              drawWidth = minSide;
+              drawHeight = maxSide;
+            }
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = width = drawWidth;
+          canvas.height = height = drawHeight;
+          var context = canvas.getContext('2d');
+          //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+          switch (dir) {
+            //iphone横屏拍摄，此时home键在左侧
+            case 3:
+              degree = 180;
+              drawWidth = -width;
+              drawHeight = -height;
+              break;
+              //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+            case 6:
+              canvas.width = height;
+              canvas.height = width;
+              degree = 90;
+              drawWidth = width;
+              drawHeight = -height;
+              break;
+              //iphone竖屏拍摄，此时home键在上方
+            case 8:
+              canvas.width = height;
+              canvas.height = width;
+              degree = 270;
+              drawWidth = -width;
+              drawHeight = height;
+              break;
+          }
+          //使用canvas旋转校正
+          context.rotate(degree * Math.PI / 180);
+          context.drawImage(this, 0, 0, drawWidth, drawHeight);
+          //返回校正图片
+          next(canvas.toDataURL("image/jpeg", .5));
+        }
+        image.src = img;
+      }
+    </script>
+</body>
+</html>

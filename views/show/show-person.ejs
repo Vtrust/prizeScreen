@@ -13,19 +13,19 @@
 	</div>
 	<div id="show-container">
 		<div class="show-main">
-			<a href="/show/persons?year=<%=year%>&item=<%= item%>&prize=<%= prize%>">
+			<a href="/show/persons?year=<%=year%>&desc_a=<%= desc_a%>&desc_b=<%= desc_b%>">
 				<div class="show-person-title">
-					<h1><%=people[0].name%></h1>
+					<h1><%=person.name%></h1>
 				</div>
 			</a>
 			
 			<div class="show-content">
+				<a href="/show">
 				<div class="show-one-person">
-					<img src="/image/headers/<%=people[0].pic%>" alt="">
+					<img src="/image/headers/<%=person.photo%>" alt="">
 				</div>
+				<a>
 				<div class="show-show">
-					<div class="slick-for">
-						<div>
 							<div  class="show-person-slick">
 								<ul>
 									<li>
@@ -33,7 +33,7 @@
 											<i class="depart"></i>
 										</span> :
 										<span style="font-family: 楷体">
-											<%=people[0].gender%>
+											<%=person.gender%>
 										</span>
 									</li>
 									<li>
@@ -41,7 +41,7 @@
 											<i class="depart"></i>
 										</span> :
 										<span style="font-family: 楷体">
-											<%=people[0].id%>
+											<%=person.per_id%>
 										</span>
 									</li>
 									<li>
@@ -49,7 +49,7 @@
 											<i class="depart"></i>
 										</span> :
 										<span style="font-family: 楷体">
-											<%=people[0].department%>
+											<%=person.dept_name%>
 										</span>
 									</li>
 									<li>
@@ -57,72 +57,37 @@
 											<i class="depart"></i>
 										</span> :
 										<span style="font-family: 楷体">
-											<%=people[0].position%>
+											<%=person.job_name%>
 										</span>
 									</li>
 									<li>
 										<span class="part">曾获奖
 											<i class="depart"></i>
 										</span> :
-										<span style="font-family: 楷体">
-											请往左侧滑动屏幕
-										</span>
+									</li>
+									<li>
+										<div  class="show-slick">
+										<%for(var j=0;j<prizes.length;j++){%>
+											<%if(prizes[j]){%>
+											<div class="show-item">
+												<div class="show-iitem-line"></div>
+												<div class="show-iitem">
+													
+													<div class="show-iiitem" style="font-size: 25px; line-height: 35px;">
+														<p><%=prizes[j].year%>年<br/>
+														<%=prizes[j].desc_a%><br/>
+														<%=prizes[j].desc_b%></p>
+													</div>
+											
+												</div>
+												<div class="show-iitem-line"></div>
+											</div>
+											<%}%>
+										<%}%>
+									</div>
 									</li>
 								</ul>
 							</div>
-						</div>
-						<%if(people.length&&people.length>15){%>
-						<%for(var i=0;i<=parseInt(people.length/15);i++){%>
-						<div>
-							<div  class="show-slick">
-								<%for(var j=0;j<15;j++){%>
-								<%if(people[j+i*15]){%>
-								<div class="show-item">
-									<div class="show-iitem-line"></div>
-									<div class="show-iitem">										
-										<div class="show-iiitem">
-											<span style="font-size: 40px;font-family: 楷体">
-												<%=people[j+i*15].year%>年
-												<%=people[j+i*15].item%></br>
-												<%=people[j+i*15].detail%>
-											</span>
-										</div>
-									</div>
-									<div class="show-iitem-line"></div>
-								</div>
-								<%}else{%>
-								<div class="show-item"></div>
-								<%}%>
-								<%}%>
-							</div>
-						</div>
-						<%}%>
-						<%}else{%>
-						<div>
-							<div  class="show-slick">
-								<%for(var j=0;j<15;j++){%>
-								<%if(people[j]){%>
-								<div class="show-item">
-									<div class="show-iitem-line"></div>
-									<div class="show-iitem">
-										<div class="show-iiitem">
-											<span style="font-size: 20px;font-family: 楷体">
-												<%=people[j].year%>年
-												<%=people[j].item%></br>
-												<%=people[j].detail%>
-											</span>
-										</div>
-									</div>
-									<div class="show-iitem-line"></div>
-								</div>
-								<%}else{%>
-								<div class="show-item"></div>
-								<%}%>
-								<%}%>
-							</div>
-						</div>
-						<%}%>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -130,19 +95,5 @@
 	<script src="/libs/layui/layui.all.js"></script>
 	<script type="text/javascript" src="/libs/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="/libs/slick-carousel/slick/slick.min.js"></script>
-	<script type="text/javascript">
-		//轮播图初始化
-		$(document).ready(function(){
-			$(function(){
-				$('.slick-for').slick({
-					autoplay:false,
-					arrows: false,
-					dots: true,
-					// autoplaySpeed:1000,
-					pauseOnHover:false
-				});
-			});	
-		});
-	</script>
 </body>
 </html>

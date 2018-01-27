@@ -22,8 +22,9 @@
 				</div>
 				<div class="show-show">
 					<div class="slick-for">
+						<%if(years){%>
 						<%if(years.length&&years.length>15){%>
-							<%for(var i=0;i<=parseInt(years.length/15);i++){%>
+							<%for(var i=0;i<= parseInt(years.length/15);i++){%>
 							<div>
 								<div  class="show-slick">
 									<%for(var j=0;j<15;j++){%>
@@ -31,9 +32,9 @@
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/item?year=<%= years[j+i*15].year%>'>
+												<a href='/show/desc_a?year=<%= years[j+i*15].year%>'>
 													<div class="show-iiitem">
-														<p><%=years[j+i*15].year%></p>
+														<p class="show-year"><%=years[j+i*15].year%>年</p>
 													</div>
 												</a>
 											</div>
@@ -54,9 +55,9 @@
 										<div class="show-item">
 											<div class="show-iitem-line"></div>
 											<div class="show-iitem">
-												<a href='/show/item?year=<%= years[j].year%>'>
+												<a href='/show/desc_a?year=<%= years[j].year%>'>
 												<div class="show-iiitem">
-													<p><%=years[j].year%></p>
+													<p class="show-year"><%=years[j].year%>年</p>
 												</div>
 												</a>
 											</div>
@@ -69,6 +70,9 @@
 								</div>
 							</div>
 						<%}%>
+						<%}else{%>
+						<h1>无数据</h1>
+						<%}%>
 					</div>
 				</div>
 			</div>
@@ -77,19 +81,6 @@
 	<script src="/libs/layui/layui.all.js"></script>
 	<script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="libs/slick-carousel/slick/slick.min.js"></script>
-	<script type="text/javascript">
-		//轮播图初始化
-		$(document).ready(function(){
-			$(function(){
-				$('.slick-for').slick({
-					autoplay:false,
-					arrows: false,
-					dots: true,
-					// autoplaySpeed:1000,
-					pauseOnHover:false
-				});
-			});	
-		});
-	</script>
+	<script type="text/javascript" src="/javascripts/slickset.js"></script>
 </body>
 </html>
